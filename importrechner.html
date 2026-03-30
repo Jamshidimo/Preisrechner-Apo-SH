@@ -590,6 +590,26 @@ async function speichereHistorieDatei(eintraege, sha) {
 }
 
 // ──────────────────────────────────────────────
+// Save with SHA-conflict retry
+// ──────────────────────────────────────────────
+async function speichernMitRetry(eintrag, versuche = 2) {
+  for (let i = 0; i < versuche; i++) {
+    const { eintraege, sha } = await holeHistorieDatei();
+    eintraege.push(eintrag);
+    try {
+      await speichereHistorieDatei(eintraege, sha);
+      renderHistorie(eintraege);
+      return;
+    } catch (e) {
+      if (i < versuche - 1 && e.message && e.message.includes('does not match')) {
+        continue; // SHA conflict – re-fetch and retry
+      }
+      throw e;
+    }
+  }
+}
+
+// ──────────────────────────────────────────────
 // Save button
 // ──────────────────────────────────────────────
 async function speichern() {
@@ -605,8 +625,6 @@ async function speichern() {
   zeigeStatus('Speichere auf GitHub…', 'info');
 
   try {
-    const { eintraege, sha } = await holeHistorieDatei();
-
     const jetzt = new Date();
     const eintrag = {
       ...letzteBerechnung,
@@ -614,11 +632,9 @@ async function speichern() {
       zeit:  jetzt.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })
     };
 
-    eintraege.push(eintrag);
-    await speichereHistorieDatei(eintraege, sha);
+    await speichernMitRetry(eintrag);
 
     zeigeStatus(`✓ „${eintrag.artikel}" gespeichert (${eintrag.datum} ${eintrag.zeit})`, 'ok');
-    renderHistorie(eintraege);
   } catch (e) {
     zeigeStatus('Fehler: ' + e.message, 'err');
   } finally {

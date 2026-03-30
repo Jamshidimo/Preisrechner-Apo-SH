@@ -371,6 +371,23 @@
       }
     }
 
+    // ── Save with SHA-conflict retry ──
+    async function speichernMitRetry(gh, eintrag, versuche = 2) {
+      for (let i = 0; i < versuche; i++) {
+        const { eintraege, sha } = await holeHistorieDatei(gh);
+        eintraege.push(eintrag);
+        try {
+          await speichereHistorieDatei(gh, eintraege, sha);
+          return;
+        } catch (e) {
+          if (i < versuche - 1 && e.message && e.message.includes('does not match')) {
+            continue;
+          }
+          throw e;
+        }
+      }
+    }
+
     // ── Speichern ──
     async function speichern() {
       if (!letzteBerechnung) return;
@@ -382,15 +399,13 @@
       $('saveBtn').disabled = true;
       zeigeStatus('Speichere auf GitHub…', 'info');
       try {
-        const { eintraege, sha } = await holeHistorieDatei(gh);
         const jetzt = new Date();
         const eintrag = {
           ...letzteBerechnung,
           datum: jetzt.toLocaleDateString('de-CH'),
           zeit:  jetzt.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })
         };
-        eintraege.push(eintrag);
-        await speichereHistorieDatei(gh, eintraege, sha);
+        await speichernMitRetry(gh, eintrag);
         zeigeStatus(`✓ „${eintrag.artikel}" gespeichert (${eintrag.datum} ${eintrag.zeit})`, 'ok');
       } catch (e) {
         zeigeStatus('Fehler: ' + e.message, 'err');
