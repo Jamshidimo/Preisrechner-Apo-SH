@@ -48,5 +48,16 @@
     "einzelpreis": 97.828,
     "datum": "30.3.2026",
     "zeit": "22:45"
+  },
+  {
+    "typ": "SL",
+    "artikel": "fghjklö",
+    "sl_preis": 25.5,
+    "versand": 2.7,
+    "anzahl": 11,
+    "gesamtpreis": 28.2,
+    "einzelpreis": 2.5636363636363635,
+    "datum": "30.3.2026",
+    "zeit": "22:47"
   }
 ]
