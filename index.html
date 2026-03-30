@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Importware-Rechner – Apotheke</title>
+  <title>Preisrechner – Apotheke</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -11,681 +11,133 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       background: #eef2f7;
       min-height: 100vh;
-      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
     }
 
-    .page-title {
+    .header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 40px;
     }
-    .page-title h1 {
-      font-size: 1.5rem;
+    .header h1 {
+      font-size: 2rem;
       font-weight: 800;
       color: #1a2740;
     }
-    .page-title p {
-      font-size: 0.875rem;
+    .header p {
+      font-size: 1rem;
       color: #6b7c95;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
-    .layout {
+    .cards {
       display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 20px;
-      max-width: 960px;
-      margin: 0 auto;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 720px;
+      width: 100%;
     }
 
-    @media (max-width: 720px) {
-      .layout { grid-template-columns: 1fr; }
-      .settings-panel { order: -1; }
+    @media (max-width: 560px) {
+      .cards { grid-template-columns: 1fr; }
+      .header h1 { font-size: 1.5rem; }
     }
 
-    /* ── Cards ── */
     .card {
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-decoration: none;
+      color: inherit;
+      border: 2px solid transparent;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: #0d6efd;
+      box-shadow: 0 8px 32px rgba(13,110,253,0.15);
+      transform: translateY(-3px);
     }
 
-    .card-title {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      color: #8a99ad;
-      margin-bottom: 16px;
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 18px;
+    }
+    .icon-blue { background: #e8f0fe; }
+    .icon-green { background: #e8f5e9; }
+
+    .card h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #1a2740;
+      margin-bottom: 8px;
+    }
+    .card p {
+      font-size: 0.875rem;
+      color: #6b7c95;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-btn {
+      margin-top: 24px;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-    }
-    .card-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e8eef4;
-    }
-
-    /* ── Form fields ── */
-    .field { margin-bottom: 14px; }
-    label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #344054;
-      margin-bottom: 5px;
-    }
-    .input-wrap { position: relative; }
-    .input-wrap .pre,
-    .input-wrap .suf {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.85rem;
-      color: #7a8fa6;
-      pointer-events: none;
-      font-weight: 500;
-    }
-    .input-wrap .pre { left: 10px; }
-    .input-wrap .suf { right: 10px; }
-
-    input[type="number"], input[type="text"] {
-      width: 100%;
-      padding: 9px 10px;
-      border: 1.5px solid #d0d9e4;
-      border-radius: 7px;
-      font-size: 0.95rem;
-      color: #1a2740;
-      outline: none;
-      transition: border-color 0.15s, background 0.15s;
-      background: #f8fafc;
-    }
-    input[type="number"].has-pre { padding-left: 48px; }
-    input[type="number"].has-suf { padding-right: 42px; }
-    input[type="number"]:focus, input[type="text"]:focus {
-      border-color: #0d6efd;
-      background: #fff;
-    }
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
-    input[type="number"] { -moz-appearance: textfield; }
-
-    input[type="password"] {
-      width: 100%;
-      padding: 9px 10px;
-      border: 1.5px solid #d0d9e4;
-      border-radius: 7px;
-      font-size: 0.85rem;
-      color: #1a2740;
-      outline: none;
-      background: #f8fafc;
-      transition: border-color 0.15s;
-    }
-    input[type="password"]:focus { border-color: #0d6efd; background: #fff; }
-
-    /* Faktor row with margin badge */
-    .faktor-row {
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-    }
-    .faktor-row .field { flex: 1; margin-bottom: 0; }
-    .marge-badge {
-      flex-shrink: 0;
-      background: #e8f5e9;
-      color: #2e7d32;
-      border: 1.5px solid #a5d6a7;
-      border-radius: 7px;
-      padding: 9px 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      white-space: nowrap;
-      min-width: 78px;
-      text-align: center;
-      line-height: 1.2;
-    }
-    .marge-badge span { display: block; font-size: 0.68rem; font-weight: 500; color: #4caf50; }
-
-    /* ── Results ── */
-    .results {
-      background: #f4f8ff;
-      border: 1.5px solid #c7d9f7;
-      border-radius: 10px;
-      padding: 16px 18px;
-      margin-top: 18px;
-    }
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-      font-size: 0.875rem;
-      color: #3a4d65;
-      border-bottom: 1px solid #dde8f5;
-    }
-    .result-row:last-child { border-bottom: none; }
-    .result-row .val { font-weight: 600; color: #1a2740; font-variant-numeric: tabular-nums; }
-    .result-row .sub { font-size: 0.75rem; color: #8a99ad; margin-left: 6px; }
-
-    .result-total {
-      margin-top: 10px;
-      padding-top: 12px;
-      border-top: 2px solid #0d6efd;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .result-total .lbl { font-weight: 700; font-size: 1rem; color: #0d6efd; }
-    .result-total .val { font-size: 1.2rem; font-weight: 800; color: #0d6efd; font-variant-numeric: tabular-nums; }
-
-    .result-unit {
-      background: #fff;
-      border: 1.5px solid #0d6efd33;
+      padding: 10px 20px;
       border-radius: 8px;
-      padding: 9px 12px;
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .result-unit .lbl { font-weight: 600; font-size: 0.9rem; color: #344054; }
-    .result-unit .val { font-size: 1.1rem; font-weight: 700; color: #0d6efd; font-variant-numeric: tabular-nums; }
-
-    .empty-hint {
-      text-align: center;
-      color: #b0bec5;
       font-size: 0.875rem;
-      padding: 10px 0;
-    }
-
-    /* ── Save button ── */
-    .btn {
-      width: 100%;
-      padding: 11px;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.9rem;
       font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-      margin-top: 12px;
-    }
-    .btn:active { transform: scale(0.98); }
-    .btn-primary { background: #0d6efd; color: #fff; }
-    .btn-primary:hover { background: #0b5ed7; }
-    .btn-primary:disabled { background: #90b8f8; cursor: not-allowed; }
-
-    /* ── Status message ── */
-    .status-msg {
-      font-size: 0.8rem;
-      padding: 8px 12px;
-      border-radius: 7px;
-      margin-top: 10px;
-      display: none;
-    }
-    .status-msg.ok  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; display: block; }
-    .status-msg.err { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; display: block; }
-    .status-msg.info { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; display: block; }
-
-    /* ── History table ── */
-    .history-wrap {
-      overflow-x: auto;
-      margin-top: 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.82rem;
-    }
-    th {
-      background: #f0f4f8;
-      color: #5a6a80;
-      font-weight: 700;
-      text-align: left;
-      padding: 8px 10px;
-      white-space: nowrap;
-      border-bottom: 2px solid #d0d9e4;
-    }
-    td {
-      padding: 8px 10px;
-      border-bottom: 1px solid #eef2f7;
-      color: #344054;
-      white-space: nowrap;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #f8fafc; }
-    .td-val { font-variant-numeric: tabular-nums; font-weight: 600; }
-    .empty-history {
-      text-align: center;
-      color: #b0bec5;
-      padding: 20px;
-      font-size: 0.875rem;
-    }
-
-    /* ── Settings divider ── */
-    .settings-divider {
-      border: none;
-      border-top: 1.5px solid #eef2f7;
-      margin: 18px 0;
-    }
-
-    .gh-note {
-      font-size: 0.73rem;
-      color: #8a99ad;
-      margin-top: 4px;
-      line-height: 1.4;
-    }
-
-    .toggle-pw {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
       border: none;
       cursor: pointer;
-      color: #8a99ad;
-      font-size: 0.75rem;
-      padding: 2px 4px;
+      transition: background 0.15s;
+      text-decoration: none;
     }
-    .pw-wrap { position: relative; }
-    .pw-wrap input { padding-right: 48px; }
+    .btn-blue { background: #0d6efd; color: #fff; }
+    .btn-blue:hover { background: #0b5ed7; }
+    .btn-green { background: #198754; color: #fff; }
+    .btn-green:hover { background: #157347; }
   </style>
 </head>
 <body>
 
-<div class="page-title">
-  <h1>Importware-Rechner</h1>
-  <p>Apotheke – Preisberechnung &amp; Preishistorie</p>
-</div>
+  <div class="header">
+    <h1>Apotheke – Preisrechner</h1>
+    <p>Welche Berechnung möchten Sie durchführen?</p>
+  </div>
 
-<div class="layout">
+  <div class="cards">
 
-  <!-- ══════════════════════════════
-       LEFT: Calculator + History
-  ══════════════════════════════ -->
-  <div class="left-col">
+    <!-- Importware -->
+    <a class="card" href="importrechner.html">
+      <div class="card-icon icon-blue">📦</div>
+      <h2>Importware-Rechner</h2>
+      <p>Für importierte Produkte ohne Spezialitätenliste. Berechnet Einkaufspreis mit Faktor, MwSt. und Versandkosten – inkl. Preishistorie auf GitHub.</p>
+      <span class="card-btn btn-blue">Öffnen →</span>
+    </a>
 
-    <!-- Calculator card -->
-    <div class="card">
-      <div class="card-title">Berechnung</div>
-
-      <div class="field">
-        <label for="artikelName">Artikelname</label>
-        <input type="text" id="artikelName" placeholder="z.B. Voltaren Emulgel 100g" oninput="berechnen()" />
-      </div>
-
-      <div class="field">
-        <label for="nettoPreis">Einkaufspreis (ohne MwSt.)</label>
-        <div class="input-wrap">
-          <span class="pre">CHF</span>
-          <input type="number" id="nettoPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="anzahl">Anzahl Artikel</label>
-        <div class="input-wrap">
-          <input type="number" id="anzahl" class="has-suf" min="1" step="1" placeholder="1" value="1" oninput="berechnen()" />
-          <span class="suf">Stk.</span>
-        </div>
-      </div>
-
-      <!-- Results -->
-      <div class="results" id="results">
-        <p class="empty-hint">Einkaufspreis eingeben…</p>
-      </div>
-
-      <button class="btn btn-primary" id="saveBtn" onclick="speichern()" disabled>
-        💾 &nbsp;Auf GitHub speichern
-      </button>
-      <div class="status-msg" id="statusMsg"></div>
-    </div>
-
-    <!-- History card -->
-    <div class="card" style="margin-top:20px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <div class="card-title" style="margin-bottom:0;flex:1;">Preishistorie</div>
-        <button onclick="ladeHistorie()" style="font-size:0.75rem;padding:4px 10px;border:1.5px solid #d0d9e4;border-radius:6px;background:#f8fafc;cursor:pointer;color:#344054;font-weight:600;">↻ Aktualisieren</button>
-      </div>
-      <div class="history-wrap">
-        <div id="historyContainer"><p class="empty-history">Noch keine Einträge – GitHub-Einstellungen konfigurieren und Berechnungen speichern.</p></div>
-      </div>
-    </div>
+    <!-- SL -->
+    <a class="card" href="sl-rechner.html">
+      <div class="card-icon icon-green">🏥</div>
+      <h2>SL-Rechner</h2>
+      <p>Für Spezialitätenlisten-Produkte. Berechnet den Krankenkassenpreis via LoA Kalkulator und teilt Versandkosten auf die Anzahl Artikel auf.</p>
+      <span class="card-btn btn-green">Öffnen →</span>
+    </a>
 
   </div>
 
-  <!-- ══════════════════════════════
-       RIGHT: Settings
-  ══════════════════════════════ -->
-  <div class="settings-panel">
-    <div class="card">
-      <div class="card-title">Einstellungen</div>
-
-      <!-- Faktor / Marge -->
-      <div class="faktor-row" style="margin-bottom:14px;">
-        <div class="field">
-          <label for="faktor">Faktor (Marge)</label>
-          <input type="number" id="faktor" min="1" step="0.01" value="1.6" oninput="aktualisiereMargeAnzeige(); berechnen()" />
-        </div>
-        <div class="marge-badge" id="margeBadge">
-          37.5%
-          <span>Handelsmarge</span>
-        </div>
-      </div>
-      <p style="font-size:0.73rem;color:#8a99ad;margin-top:-8px;margin-bottom:14px;">
-        Marge = (Faktor − 1) ÷ Faktor × 100
-      </p>
-
-      <div class="field">
-        <label for="mwstSatz">Mehrwertsteuer (%)</label>
-        <div class="input-wrap">
-          <input type="number" id="mwstSatz" class="has-suf" min="0" step="0.1" value="8.1" oninput="berechnen()" />
-          <span class="suf">%</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="versandKosten">Versandkosten</label>
-        <div class="input-wrap">
-          <span class="pre">CHF</span>
-          <input type="number" id="versandKosten" class="has-pre" min="0" step="0.1" value="2.70" oninput="berechnen()" />
-        </div>
-      </div>
-
-      <hr class="settings-divider" />
-      <div class="card-title" style="margin-bottom:12px;">GitHub Speichern</div>
-
-      <div class="field">
-        <label for="ghOwnerRepo">Repository (owner/repo)</label>
-        <input type="text" id="ghOwnerRepo" value="Jamshidimo/Preisrechner-Apo-SH" placeholder="owner/repo" />
-      </div>
-
-      <div class="field">
-        <label for="ghBranch">Branch</label>
-        <input type="text" id="ghBranch" value="main" placeholder="main" />
-      </div>
-
-      <div class="field">
-        <label for="ghFile">Historien-Datei (Pfad)</label>
-        <input type="text" id="ghFile" value="preishistorie.json" placeholder="preishistorie.json" />
-      </div>
-
-      <div class="field">
-        <label for="ghToken">Personal Access Token</label>
-        <div class="pw-wrap">
-          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" oninput="speichereTokenLokal()" />
-          <button class="toggle-pw" onclick="toggleToken()" title="Token anzeigen/verbergen">👁</button>
-        </div>
-        <p class="gh-note">Token wird nur im Browser (localStorage) gespeichert – nie im Code.</p>
-      </div>
-
-      <button class="btn btn-primary" style="margin-top:4px;" onclick="ladeHistorie()">
-        ↻ &nbsp;Historie laden
-      </button>
-    </div>
-  </div>
-
-</div>
-
-<script>
-// ──────────────────────────────────────────────
-// Helpers
-// ──────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-const fmt = v => 'CHF\u00a0' + v.toFixed(2);
-
-function aktualisiereMargeAnzeige() {
-  const f = parseFloat($('faktor').value);
-  if (!isNaN(f) && f > 1) {
-    const marge = ((f - 1) / f) * 100;
-    $('margeBadge').innerHTML = marge.toFixed(1) + '%<span>Handelsmarge</span>';
-  } else {
-    $('margeBadge').innerHTML = '—<span>Handelsmarge</span>';
-  }
-}
-
-// ──────────────────────────────────────────────
-// Calculator
-// ──────────────────────────────────────────────
-let letzteBerechnung = null;
-
-function berechnen() {
-  const nettoStr = $('nettoPreis').value;
-  const netto    = parseFloat(nettoStr);
-  const anzahl   = Math.max(1, parseInt($('anzahl').value) || 1);
-  const faktor   = parseFloat($('faktor').value) || 1.6;
-  const mwstPct  = parseFloat($('mwstSatz').value) || 8.1;
-  const versand  = parseFloat($('versandKosten').value) || 2.70;
-
-  if (!nettoStr || isNaN(netto) || netto < 0) {
-    $('results').innerHTML = '<p class="empty-hint">Einkaufspreis eingeben…</p>';
-    $('saveBtn').disabled = true;
-    letzteBerechnung = null;
-    return;
-  }
-
-  const nachFaktor   = netto * faktor;
-  const mwstBetrag   = nachFaktor * (mwstPct / 100);
-  const mitMwst      = nachFaktor + mwstBetrag;
-  const gesamt       = mitMwst + versand;
-  const einzelpreis  = gesamt / anzahl;
-  const marge        = ((faktor - 1) / faktor) * 100;
-
-  letzteBerechnung = {
-    artikel: $('artikelName').value.trim() || '(ohne Name)',
-    einkaufspreis: netto,
-    faktor, marge_prozent: marge,
-    mwst_prozent: mwstPct, versand,
-    anzahl, gesamtpreis: gesamt, einzelpreis
-  };
-
-  $('results').innerHTML = `
-    <div class="result-row">
-      <span>× ${faktor.toFixed(2)} <small class="sub">(${marge.toFixed(1)}% Marge)</small></span>
-      <span class="val">${fmt(nachFaktor)}</span>
-    </div>
-    <div class="result-row">
-      <span>+ MwSt. ${mwstPct}%<small class="sub"> (+${fmt(mwstBetrag)})</small></span>
-      <span class="val">${fmt(mitMwst)}</span>
-    </div>
-    <div class="result-row">
-      <span>+ Versandkosten<small class="sub"> (+${fmt(versand)})</small></span>
-      <span class="val">${fmt(gesamt)}</span>
-    </div>
-    <div class="result-total">
-      <span class="lbl">Gesamtpreis</span>
-      <span class="val">${fmt(gesamt)}</span>
-    </div>
-    ${anzahl > 1 ? `
-    <div class="result-unit">
-      <span class="lbl">Einzelpreis (÷ ${anzahl} Stk.)</span>
-      <span class="val">${fmt(einzelpreis)}</span>
-    </div>` : ''}
-  `;
-
-  $('saveBtn').disabled = false;
-}
-
-// ──────────────────────────────────────────────
-// Token: localStorage
-// ──────────────────────────────────────────────
-function speichereTokenLokal() {
-  localStorage.setItem('gh_token', $('ghToken').value);
-}
-function toggleToken() {
-  const inp = $('ghToken');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-}
-function ladeGespeicherteEinstellungen() {
-  const t = localStorage.getItem('gh_token');
-  if (t) $('ghToken').value = t;
-}
-
-// ──────────────────────────────────────────────
-// GitHub API
-// ──────────────────────────────────────────────
-function ghHeaders() {
-  return {
-    'Authorization': 'token ' + $('ghToken').value.trim(),
-    'Accept': 'application/vnd.github.v3+json',
-    'Content-Type': 'application/json'
-  };
-}
-
-function ghUrl() {
-  const repo   = $('ghOwnerRepo').value.trim();
-  const branch = $('ghBranch').value.trim();
-  const file   = $('ghFile').value.trim();
-  return `https://api.github.com/repos/${repo}/contents/${file}?ref=${branch}`;
-}
-
-async function holeHistorieDatei() {
-  const resp = await fetch(ghUrl(), { headers: ghHeaders() });
-  if (resp.status === 404) return { eintraege: [], sha: null };
-  if (!resp.ok) throw new Error(`GitHub API: ${resp.status} ${resp.statusText}`);
-  const data = await resp.json();
-  const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
-  return { eintraege: Array.isArray(content) ? content : [], sha: data.sha };
-}
-
-async function speichereHistorieDatei(eintraege, sha) {
-  const repo   = $('ghOwnerRepo').value.trim();
-  const branch = $('ghBranch').value.trim();
-  const file   = $('ghFile').value.trim();
-  const url    = `https://api.github.com/repos/${repo}/contents/${file}`;
-
-  const body = {
-    message: `Preishistorie: ${eintraege[eintraege.length - 1].artikel} (${eintraege[eintraege.length - 1].datum})`,
-    content: btoa(unescape(encodeURIComponent(JSON.stringify(eintraege, null, 2)))),
-    branch
-  };
-  if (sha) body.sha = sha;
-
-  const resp = await fetch(url, {
-    method: 'PUT',
-    headers: ghHeaders(),
-    body: JSON.stringify(body)
-  });
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error(err.message || `GitHub API: ${resp.status}`);
-  }
-}
-
-// ──────────────────────────────────────────────
-// Save button
-// ──────────────────────────────────────────────
-async function speichern() {
-  if (!letzteBerechnung) return;
-
-  const token = $('ghToken').value.trim();
-  if (!token) {
-    zeigeStatus('Bitte zuerst einen GitHub Personal Access Token eingeben.', 'err');
-    return;
-  }
-
-  $('saveBtn').disabled = true;
-  zeigeStatus('Speichere auf GitHub…', 'info');
-
-  try {
-    const { eintraege, sha } = await holeHistorieDatei();
-
-    const jetzt = new Date();
-    const eintrag = {
-      ...letzteBerechnung,
-      datum: jetzt.toLocaleDateString('de-CH'),
-      zeit:  jetzt.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })
-    };
-
-    eintraege.push(eintrag);
-    await speichereHistorieDatei(eintraege, sha);
-
-    zeigeStatus(`✓ „${eintrag.artikel}" gespeichert (${eintrag.datum} ${eintrag.zeit})`, 'ok');
-    renderHistorie(eintraege);
-  } catch (e) {
-    zeigeStatus('Fehler: ' + e.message, 'err');
-  } finally {
-    $('saveBtn').disabled = false;
-  }
-}
-
-// ──────────────────────────────────────────────
-// Load history
-// ──────────────────────────────────────────────
-async function ladeHistorie() {
-  const token = $('ghToken').value.trim();
-  if (!token) {
-    zeigeStatus('Bitte GitHub Token eingeben um die Historie zu laden.', 'err');
-    return;
-  }
-  zeigeStatus('Lade Preishistorie…', 'info');
-  try {
-    const { eintraege } = await holeHistorieDatei();
-    renderHistorie(eintraege);
-    zeigeStatus(`${eintraege.length} Einträge geladen.`, 'ok');
-    setTimeout(() => { $('statusMsg').className = 'status-msg'; }, 3000);
-  } catch (e) {
-    zeigeStatus('Fehler beim Laden: ' + e.message, 'err');
-  }
-}
-
-function renderHistorie(eintraege) {
-  if (!eintraege.length) {
-    $('historyContainer').innerHTML = '<p class="empty-history">Noch keine Einträge gespeichert.</p>';
-    return;
-  }
-
-  const zeilen = [...eintraege].reverse().map(e => `
-    <tr>
-      <td>${e.datum}${e.zeit ? ' ' + e.zeit : ''}</td>
-      <td>${e.artikel}</td>
-      <td class="td-val">${fmt(e.einkaufspreis)}</td>
-      <td>${e.faktor ? e.faktor.toFixed(2) : '–'}</td>
-      <td>${e.marge_prozent ? e.marge_prozent.toFixed(1) + '%' : '–'}</td>
-      <td>${e.mwst_prozent ? e.mwst_prozent + '%' : '–'}</td>
-      <td class="td-val">${fmt(e.versand)}</td>
-      <td>${e.anzahl}</td>
-      <td class="td-val">${fmt(e.gesamtpreis)}</td>
-      <td class="td-val">${fmt(e.einzelpreis)}</td>
-    </tr>`).join('');
-
-  $('historyContainer').innerHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>Datum / Zeit</th>
-          <th>Artikel</th>
-          <th>EK (netto)</th>
-          <th>Faktor</th>
-          <th>Marge</th>
-          <th>MwSt.</th>
-          <th>Versand</th>
-          <th>Stk.</th>
-          <th>Gesamt</th>
-          <th>Einzelpreis</th>
-        </tr>
-      </thead>
-      <tbody>${zeilen}</tbody>
-    </table>`;
-}
-
-// ──────────────────────────────────────────────
-// Status helper
-// ──────────────────────────────────────────────
-function zeigeStatus(msg, typ) {
-  const el = $('statusMsg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + typ;
-}
-
-// ──────────────────────────────────────────────
-// Init
-// ──────────────────────────────────────────────
-ladeGespeicherteEinstellungen();
-aktualisiereMargeAnzeige();
-</script>
 </body>
 </html>

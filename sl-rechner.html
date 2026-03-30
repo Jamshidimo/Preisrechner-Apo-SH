@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SL-Rechner – Apotheke</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #eef2f7;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .topbar {
+      max-width: 540px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.85rem;
+      color: #6b7c95;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 7px;
+      border: 1.5px solid #d0d9e4;
+      background: #fff;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .back-link:hover { border-color: #198754; color: #198754; }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .page-title h1 { font-size: 1.5rem; font-weight: 800; color: #1a2740; }
+    .page-title p  { font-size: 0.875rem; color: #6b7c95; margin-top: 4px; }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      padding: 28px 24px;
+      max-width: 540px;
+      margin: 0 auto 20px;
+    }
+
+    .card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #8a99ad;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e8eef4;
+    }
+
+    /* LoA Link Button */
+    .loa-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #e8f5e9;
+      border: 2px solid #a5d6a7;
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: #1b5e20;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      margin-bottom: 4px;
+    }
+    .loa-btn:hover {
+      background: #c8e6c9;
+      border-color: #66bb6a;
+      transform: translateY(-1px);
+    }
+    .loa-btn-left { display: flex; align-items: center; gap: 14px; }
+    .loa-btn-icon {
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+    .loa-btn-text strong { display: block; font-size: 1rem; font-weight: 700; }
+    .loa-btn-text span  { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; display: block; }
+    .loa-btn-arrow { font-size: 1.3rem; opacity: 0.6; }
+    .loa-hint {
+      font-size: 0.75rem;
+      color: #8a99ad;
+      margin-top: 6px;
+      margin-bottom: 20px;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1.5px solid #eef2f7;
+      margin: 20px 0;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 14px; }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #344054;
+      margin-bottom: 5px;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap .pre,
+    .input-wrap .suf {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      color: #7a8fa6;
+      pointer-events: none;
+      font-weight: 500;
+    }
+    .input-wrap .pre { left: 10px; }
+    .input-wrap .suf { right: 10px; }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1.5px solid #d0d9e4;
+      border-radius: 7px;
+      font-size: 0.95rem;
+      color: #1a2740;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      background: #f8fafc;
+    }
+    input[type="number"].has-pre { padding-left: 48px; }
+    input[type="number"].has-suf { padding-right: 42px; }
+    input[type="number"]:focus, input[type="text"]:focus {
+      border-color: #198754;
+      background: #fff;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    /* Results */
+    .results {
+      background: #f0f9f4;
+      border: 1.5px solid #a5d6a7;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-top: 18px;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 0.875rem;
+      color: #2d4a35;
+      border-bottom: 1px solid #c8e6c9;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-row .val { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .result-row .sub { font-size: 0.75rem; color: #8a99ad; margin-left: 5px; }
+
+    .result-total {
+      margin-top: 10px;
+      padding-top: 12px;
+      border-top: 2px solid #198754;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .result-total .lbl { font-weight: 700; font-size: 1rem; color: #198754; }
+    .result-total .val { font-size: 1.2rem; font-weight: 800; color: #198754; font-variant-numeric: tabular-nums; }
+
+    .result-unit {
+      background: #fff;
+      border: 1.5px solid #19875433;
+      border-radius: 8px;
+      padding: 9px 12px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .result-unit .lbl { font-weight: 600; font-size: 0.9rem; color: #344054; }
+    .result-unit .val { font-size: 1.1rem; font-weight: 700; color: #198754; font-variant-numeric: tabular-nums; }
+
+    .empty-hint {
+      text-align: center;
+      color: #b0bec5;
+      font-size: 0.875rem;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="back-link" href="index.html">← Zurück</a>
+  </div>
+
+  <div class="page-title">
+    <h1>SL-Rechner</h1>
+    <p>Spezialitätenliste – Versandkosten auf Einzelprodukt aufteilen</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Schritt 1 – Preis berechnen</div>
+
+    <!-- LoA Link – URL bitte anpassen -->
+    <a class="loa-btn" href="https://www.spezialitaetenliste.ch/LOACalculator.aspx" target="_blank" rel="noopener">
+      <div class="loa-btn-left">
+        <div class="loa-btn-icon">🔗</div>
+        <div class="loa-btn-text">
+          <strong>LoA Kalkulator öffnen</strong>
+          <span>spezialitaetenliste.ch/LOACalculator</span>
+        </div>
+      </div>
+      <div class="loa-btn-arrow">↗</div>
+    </a>
+    <p class="loa-hint">Preis dort berechnen, dann unten eintragen.</p>
+
+    <hr class="divider" />
+
+    <div class="card-title">Schritt 2 – Versand aufteilen</div>
+
+    <div class="field">
+      <label for="artikelName">Artikelname <span style="font-weight:400;color:#8a99ad;">(optional)</span></label>
+      <input type="text" id="artikelName" placeholder="z.B. Voltaren Emulgel 100g" oninput="berechnen()" />
+    </div>
+
+    <div class="field">
+      <label for="slPreis">Preis aus LoA Kalkulator (CHF)</label>
+      <div class="input-wrap">
+        <span class="pre">CHF</span>
+        <input type="number" id="slPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="versand">Versandkosten</label>
+      <div class="input-wrap">
+        <span class="pre">CHF</span>
+        <input type="number" id="versand" class="has-pre" min="0" step="0.1" value="2.70" oninput="berechnen()" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="anzahl">Anzahl Artikel</label>
+      <div class="input-wrap">
+        <input type="number" id="anzahl" class="has-suf" min="1" step="1" value="1" oninput="berechnen()" />
+        <span class="suf">Stk.</span>
+      </div>
+    </div>
+
+    <div class="results" id="results">
+      <p class="empty-hint">SL-Preis eingeben…</p>
+    </div>
+  </div>
+
+  <script>
+    const fmt = v => 'CHF\u00a0' + v.toFixed(2);
+
+    function berechnen() {
+      const slStr  = document.getElementById('slPreis').value;
+      const sl     = parseFloat(slStr);
+      const versand = parseFloat(document.getElementById('versand').value) || 0;
+      const anzahl  = Math.max(1, parseInt(document.getElementById('anzahl').value) || 1);
+      const el      = document.getElementById('results');
+
+      if (!slStr || isNaN(sl) || sl < 0) {
+        el.innerHTML = '<p class="empty-hint">SL-Preis eingeben…</p>';
+        return;
+      }
+
+      const gesamt      = sl + versand;
+      const einzelpreis = gesamt / anzahl;
+
+      el.innerHTML = `
+        <div class="result-row">
+          <span>SL-Preis (aus LoA Kalkulator)</span>
+          <span class="val">${fmt(sl)}</span>
+        </div>
+        <div class="result-row">
+          <span>+ Versandkosten<small class="sub">(+${fmt(versand)})</small></span>
+          <span class="val">${fmt(gesamt)}</span>
+        </div>
+        <div class="result-total">
+          <span class="lbl">Gesamtpreis</span>
+          <span class="val">${fmt(gesamt)}</span>
+        </div>
+        ${anzahl > 1 ? `
+        <div class="result-unit">
+          <span class="lbl">Einzelpreis (÷ ${anzahl} Stk.)</span>
+          <span class="val">${fmt(einzelpreis)}</span>
+        </div>` : ''}
+      `;
+    }
+  </script>
+</body>
+</html>
