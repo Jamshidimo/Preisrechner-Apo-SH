@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preishistorie – Apotheke</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #eef2f7;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .topbar {
+      max-width: 1100px;
+      margin: 0 auto 16px;
+    }
+    .topbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.85rem;
+      color: #6b7c95;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 7px;
+      border: 1.5px solid #d0d9e4;
+      background: #fff;
+    }
+    .topbar a:hover { border-color: #e65100; color: #e65100; }
+
+    .page-title { text-align: center; margin-bottom: 24px; }
+    .page-title h1 { font-size: 1.5rem; font-weight: 800; color: #1a2740; }
+    .page-title p  { font-size: 0.875rem; color: #6b7c95; margin-top: 4px; }
+
+    .main { max-width: 1100px; margin: 0 auto; }
+
+    /* ── Filter card ── */
+    .filter-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+    @media (max-width: 800px) {
+      .filter-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .filter-grid { grid-template-columns: 1fr; }
+    }
+
+    .filter-field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #5a6a80;
+      margin-bottom: 4px;
+    }
+    .filter-field input,
+    .filter-field select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1.5px solid #d0d9e4;
+      border-radius: 7px;
+      font-size: 0.875rem;
+      color: #1a2740;
+      background: #f8fafc;
+      outline: none;
+    }
+    .filter-field input:focus,
+    .filter-field select:focus { border-color: #e65100; background: #fff; }
+    .filter-field input[type="date"] { cursor: pointer; }
+
+    .btn-load {
+      padding: 9px 18px;
+      background: #e65100;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-load:hover { background: #bf360c; }
+
+    .gh-token-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1.5px solid #eef2f7;
+    }
+    .gh-token-row .filter-field { flex: 1; }
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 44px; }
+    .toggle-pw {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #8a99ad; font-size: 0.75rem;
+    }
+    input[type="password"] {
+      width: 100%; padding: 8px 10px;
+      border: 1.5px solid #d0d9e4; border-radius: 7px;
+      font-size: 0.875rem; color: #1a2740; background: #f8fafc; outline: none;
+    }
+    input[type="password"]:focus { border-color: #e65100; background: #fff; }
+
+    .status-msg {
+      font-size: 0.8rem; padding: 8px 12px; border-radius: 7px;
+      margin-top: 12px; display: none;
+    }
+    .status-msg.ok   { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; display: block; }
+    .status-msg.err  { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; display: block; }
+    .status-msg.info { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; display: block; }
+
+    /* ── Result stats ── */
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .stat-pill {
+      background: #fff;
+      border: 1.5px solid #d0d9e4;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #344054;
+    }
+    .stat-pill.import { border-color: #90caf9; color: #1565c0; background: #e3f2fd; }
+    .stat-pill.sl     { border-color: #a5d6a7; color: #2e7d32; background: #e8f5e9; }
+
+    /* ── Table ── */
+    .table-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    thead tr { background: #f4f6fa; }
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 2px solid #d0d9e4;
+      color: #5a6a80;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    th:hover { color: #1a2740; }
+    th .sort-icon { margin-left: 4px; opacity: 0.4; font-size: 0.7rem; }
+    th.active .sort-icon { opacity: 1; color: #e65100; }
+
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #eef2f7;
+      color: #344054;
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbfc; }
+
+    .td-val { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .td-preis { font-variant-numeric: tabular-nums; font-weight: 700; color: #1a2740; }
+
+    .badge-typ {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-import { background: #e3f2fd; color: #1565c0; }
+    .badge-sl     { background: #e8f5e9; color: #2e7d32; }
+
+    .no-data {
+      text-align: center;
+      padding: 40px 20px;
+      color: #b0bec5;
+      font-size: 0.9rem;
+    }
+    .no-data p { margin-top: 8px; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html">← Zurück zur Startseite</a>
+</div>
+
+<div class="page-title">
+  <h1>📋 Preishistorie</h1>
+  <p>Alle gespeicherten Berechnungen – filterbar und durchsuchbar</p>
+</div>
+
+<div class="main">
+
+  <!-- Filter card -->
+  <div class="filter-card">
+
+    <!-- GitHub Token -->
+    <div class="gh-token-row">
+      <div class="filter-field" style="flex:1;">
+        <label for="ghToken">GitHub Personal Access Token</label>
+        <div class="pw-wrap">
+          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" oninput="speichereToken()" />
+          <button class="toggle-pw" onclick="toggleToken()">👁</button>
+        </div>
+      </div>
+      <button class="btn-load" onclick="ladeHistorie()">↻ &nbsp;Laden</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-grid">
+      <div class="filter-field">
+        <label for="filterArtikel">Artikelname suchen</label>
+        <input type="text" id="filterArtikel" placeholder="z.B. Voltaren…" oninput="filtereUndRendere()" />
+      </div>
+      <div class="filter-field">
+        <label for="filterTyp">Typ</label>
+        <select id="filterTyp" onchange="filtereUndRendere()">
+          <option value="">Alle</option>
+          <option value="Importware">Importware</option>
+          <option value="SL">SL</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label for="filterVon">Datum von</label>
+        <input type="date" id="filterVon" onchange="filtereUndRendere()" />
+      </div>
+      <div class="filter-field">
+        <label for="filterBis">Datum bis</label>
+        <input type="date" id="filterBis" onchange="filtereUndRendere()" />
+      </div>
+      <div class="filter-field">
+        <label>&nbsp;</label>
+        <button class="btn-load" onclick="resetFilter()" style="background:#6b7c95;">✕ Reset</button>
+      </div>
+    </div>
+
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+
+  <!-- Stats + Table -->
+  <div id="tableSection" style="display:none;">
+    <div class="stats-bar" id="statsBar"></div>
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortiere('datum')"        >Datum / Zeit    <span class="sort-icon" id="s-datum">↕</span></th>
+              <th onclick="sortiere('typ')"          >Typ             <span class="sort-icon" id="s-typ">↕</span></th>
+              <th onclick="sortiere('artikel')"      >Artikelname     <span class="sort-icon" id="s-artikel">↕</span></th>
+              <th onclick="sortiere('einkaufspreis')">EK-Preis        <span class="sort-icon" id="s-einkaufspreis">↕</span></th>
+              <th onclick="sortiere('faktor')"       >Faktor / Marge  <span class="sort-icon" id="s-faktor">↕</span></th>
+              <th onclick="sortiere('versand')"      >Versand         <span class="sort-icon" id="s-versand">↕</span></th>
+              <th>Stk.</th>
+              <th onclick="sortiere('gesamtpreis')"  >Gesamtpreis     <span class="sort-icon" id="s-gesamtpreis">↕</span></th>
+              <th onclick="sortiere('einzelpreis')"  >Einzelpreis     <span class="sort-icon" id="s-einzelpreis">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="noData" class="no-data" style="display:none;">
+    <div style="font-size:2rem;">📭</div>
+    <strong>Keine Einträge gefunden</strong>
+    <p>Versuche die Filter anzupassen oder lade die Historie neu.</p>
+  </div>
+
+  <div id="emptyState" class="no-data">
+    <div style="font-size:2rem;">📋</div>
+    <strong>Noch keine Daten geladen</strong>
+    <p>GitHub Token eingeben und auf „Laden" klicken.</p>
+  </div>
+
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const fmt = v => 'CHF\u00a0' + Number(v).toFixed(2);
+
+  let alleEintraege = [];
+  let sortKey = 'datum';
+  let sortAsc = false; // newest first by default
+
+  // ── Token / Config ──
+  function speichereToken() {
+    const bestehend = JSON.parse(localStorage.getItem('apoGH') || '{}');
+    localStorage.setItem('apoGH', JSON.stringify({ ...bestehend, token: $('ghToken').value }));
+  }
+  function toggleToken() {
+    const inp = $('ghToken');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+  function ladeConfig() {
+    const gh = JSON.parse(localStorage.getItem('apoGH') || '{}');
+    if (gh.token) $('ghToken').value = gh.token;
+    return gh;
+  }
+
+  // ── GitHub API ──
+  function ghHeaders(token) {
+    return {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github.v3+json'
+    };
+  }
+
+  async function ladeHistorie() {
+    const gh = ladeConfig();
+    if (!gh.token) {
+      zeigeStatus('Bitte GitHub Token eingeben.', 'err');
+      return;
+    }
+    zeigeStatus('Lade Preishistorie von GitHub…', 'info');
+    const repo   = gh.ownerRepo || 'Jamshidimo/Preisrechner-Apo-SH';
+    const branch = gh.branch    || 'main';
+    const file   = gh.file      || 'preishistorie.json';
+    const url    = `https://api.github.com/repos/${repo}/contents/${file}?ref=${branch}`;
+
+    try {
+      const resp = await fetch(url, { headers: ghHeaders(gh.token) });
+      if (resp.status === 404) {
+        alleEintraege = [];
+        zeigeStatus('Noch keine Historien-Datei vorhanden. Zuerst Berechnungen speichern.', 'info');
+        filtereUndRendere();
+        return;
+      }
+      if (!resp.ok) throw new Error(`GitHub API: ${resp.status} ${resp.statusText}`);
+      const data = await resp.json();
+      alleEintraege = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      if (!Array.isArray(alleEintraege)) alleEintraege = [];
+      zeigeStatus(`${alleEintraege.length} Einträge geladen.`, 'ok');
+      setTimeout(() => { $('statusMsg').className = 'status-msg'; }, 3000);
+      filtereUndRendere();
+    } catch (e) {
+      zeigeStatus('Fehler beim Laden: ' + e.message, 'err');
+    }
+  }
+
+  // ── Date parsing (dd.mm.yyyy) ──
+  function parseDatum(str) {
+    if (!str) return null;
+    const parts = str.trim().split('.');
+    if (parts.length < 3) return null;
+    return new Date(+parts[2], +parts[1] - 1, +parts[0]);
+  }
+
+  // ── Filter ──
+  function filtereUndRendere() {
+    const textFilter = $('filterArtikel').value.toLowerCase().trim();
+    const typFilter  = $('filterTyp').value;
+    const vonStr     = $('filterVon').value;   // YYYY-MM-DD
+    const bisStr     = $('filterBis').value;
+
+    const von = vonStr ? new Date(vonStr) : null;
+    const bis = bisStr ? new Date(bisStr + 'T23:59:59') : null;
+
+    let gefiltert = alleEintraege.filter(e => {
+      if (textFilter && !(e.artikel || '').toLowerCase().includes(textFilter)) return false;
+
+      // Typ filter (alte Einträge ohne typ → als Importware behandeln)
+      const eTyp = e.typ || 'Importware';
+      if (typFilter && eTyp !== typFilter) return false;
+
+      // Date filter
+      if (von || bis) {
+        const d = parseDatum(e.datum);
+        if (!d) return true; // can't parse, include
+        if (von && d < von) return false;
+        if (bis && d > bis) return false;
+      }
+      return true;
+    });
+
+    // Sort
+    gefiltert = sortiereArray(gefiltert);
+
+    rendereTabelle(gefiltert);
+  }
+
+  // ── Sort ──
+  function sortiere(key) {
+    if (sortKey === key) {
+      sortAsc = !sortAsc;
+    } else {
+      sortKey = key;
+      sortAsc = key !== 'datum'; // dates default desc
+    }
+    // Update header icons
+    document.querySelectorAll('.sort-icon').forEach(el => {
+      el.textContent = '↕';
+      el.parentElement.classList.remove('active');
+    });
+    const icon = $('s-' + key);
+    if (icon) {
+      icon.textContent = sortAsc ? '↑' : '↓';
+      icon.parentElement.classList.add('active');
+    }
+    filtereUndRendere();
+  }
+
+  function sortiereArray(arr) {
+    return [...arr].sort((a, b) => {
+      let va = a[sortKey], vb = b[sortKey];
+
+      if (sortKey === 'datum') {
+        va = parseDatum(a.datum) || new Date(0);
+        vb = parseDatum(b.datum) || new Date(0);
+        return sortAsc ? va - vb : vb - va;
+      }
+      if (sortKey === 'typ' || sortKey === 'artikel') {
+        va = (va || '').toLowerCase();
+        vb = (vb || '').toLowerCase();
+        return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+      }
+      va = parseFloat(va) || 0;
+      vb = parseFloat(vb) || 0;
+      return sortAsc ? va - vb : vb - va;
+    });
+  }
+
+  // ── Render ──
+  function rendereTabelle(eintraege) {
+    $('emptyState').style.display = 'none';
+
+    if (!alleEintraege.length) {
+      $('tableSection').style.display = 'none';
+      $('noData').style.display = 'none';
+      $('emptyState').style.display = 'block';
+      return;
+    }
+
+    if (!eintraege.length) {
+      $('tableSection').style.display = 'none';
+      $('noData').style.display = 'block';
+      return;
+    }
+
+    $('noData').style.display = 'none';
+    $('tableSection').style.display = 'block';
+
+    // Stats
+    const anzahlImport = eintraege.filter(e => (e.typ || 'Importware') === 'Importware').length;
+    const anzahlSL     = eintraege.filter(e => e.typ === 'SL').length;
+    $('statsBar').innerHTML = `
+      <span class="stat-pill">${eintraege.length} Einträge</span>
+      ${anzahlImport ? `<span class="stat-pill import">📦 ${anzahlImport} Importware</span>` : ''}
+      ${anzahlSL     ? `<span class="stat-pill sl">🏥 ${anzahlSL} SL</span>` : ''}
+    `;
+
+    // Rows
+    const zeilen = eintraege.map(e => {
+      const typ     = e.typ || 'Importware';
+      const isSL    = typ === 'SL';
+      const badgeClass = isSL ? 'badge-sl' : 'badge-import';
+      const typLabel   = isSL ? '🏥 SL' : '📦 Importware';
+
+      const ekPreis = isSL
+        ? (e.sl_preis != null ? fmt(e.sl_preis) : '–')
+        : (e.einkaufspreis != null ? fmt(e.einkaufspreis) : '–');
+
+      const faktorInfo = isSL ? '–' :
+        (e.faktor ? `${Number(e.faktor).toFixed(2)}` +
+          (e.marge_prozent ? ` <small style="color:#8a99ad;">(${Number(e.marge_prozent).toFixed(1)}%)</small>` : '')
+        : '–');
+
+      return `<tr>
+        <td>${e.datum || ''}${e.zeit ? ' ' + e.zeit : ''}</td>
+        <td><span class="badge-typ ${badgeClass}">${typLabel}</span></td>
+        <td><strong>${e.artikel || '–'}</strong></td>
+        <td class="td-val">${ekPreis}</td>
+        <td>${faktorInfo}</td>
+        <td class="td-val">${e.versand != null ? fmt(e.versand) : '–'}</td>
+        <td>${e.anzahl || 1}</td>
+        <td class="td-preis">${e.gesamtpreis != null ? fmt(e.gesamtpreis) : '–'}</td>
+        <td class="td-preis" style="color:#e65100;">${e.einzelpreis != null ? fmt(e.einzelpreis) : '–'}</td>
+      </tr>`;
+    }).join('');
+
+    $('tableBody').innerHTML = zeilen;
+  }
+
+  // ── Reset ──
+  function resetFilter() {
+    $('filterArtikel').value = '';
+    $('filterTyp').value = '';
+    $('filterVon').value = '';
+    $('filterBis').value = '';
+    filtereUndRendere();
+  }
+
+  // ── Status ──
+  function zeigeStatus(msg, typ) {
+    const el = $('statusMsg');
+    el.textContent = msg;
+    el.className = 'status-msg ' + typ;
+  }
+
+  // ── Init ──
+  ladeConfig();
+</script>
+</body>
+</html>

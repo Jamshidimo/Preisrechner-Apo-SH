@@ -16,17 +16,16 @@
 
     .topbar {
       max-width: 540px;
-      margin: 0 auto 20px;
+      margin: 0 auto 16px;
       display: flex;
-      align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
-    .back-link {
+    .topbar a {
       display: inline-flex;
       align-items: center;
       gap: 5px;
       font-size: 0.85rem;
-      color: #6b7c95;
       text-decoration: none;
       padding: 6px 12px;
       border-radius: 7px;
@@ -34,12 +33,12 @@
       background: #fff;
       transition: border-color 0.15s, color 0.15s;
     }
-    .back-link:hover { border-color: #198754; color: #198754; }
+    .topbar a.back { color: #6b7c95; }
+    .topbar a.back:hover { border-color: #198754; color: #198754; }
+    .topbar a.hist { color: #e65100; border-color: #ffcc80; background: #fff3e0; }
+    .topbar a.hist:hover { border-color: #e65100; }
 
-    .page-title {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+    .page-title { text-align: center; margin-bottom: 24px; }
     .page-title h1 { font-size: 1.5rem; font-weight: 800; color: #1a2740; }
     .page-title p  { font-size: 0.875rem; color: #6b7c95; margin-top: 4px; }
 
@@ -63,14 +62,8 @@
       align-items: center;
       gap: 6px;
     }
-    .card-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e8eef4;
-    }
+    .card-title::after { content: ''; flex: 1; height: 1px; background: #e8eef4; }
 
-    /* LoA Link Button */
     .loa-btn {
       display: flex;
       align-items: center;
@@ -85,92 +78,61 @@
       transition: background 0.15s, border-color 0.15s, transform 0.1s;
       margin-bottom: 4px;
     }
-    .loa-btn:hover {
-      background: #c8e6c9;
-      border-color: #66bb6a;
-      transform: translateY(-1px);
-    }
+    .loa-btn:hover { background: #c8e6c9; border-color: #66bb6a; transform: translateY(-1px); }
     .loa-btn-left { display: flex; align-items: center; gap: 14px; }
-    .loa-btn-icon {
-      font-size: 1.8rem;
-      flex-shrink: 0;
-    }
+    .loa-btn-icon { font-size: 1.8rem; flex-shrink: 0; }
     .loa-btn-text strong { display: block; font-size: 1rem; font-weight: 700; }
     .loa-btn-text span  { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; display: block; }
     .loa-btn-arrow { font-size: 1.3rem; opacity: 0.6; }
-    .loa-hint {
-      font-size: 0.75rem;
-      color: #8a99ad;
-      margin-top: 6px;
-      margin-bottom: 20px;
-    }
+    .loa-hint { font-size: 0.75rem; color: #8a99ad; margin-top: 6px; margin-bottom: 20px; }
 
-    /* Divider */
-    .divider {
-      border: none;
-      border-top: 1.5px solid #eef2f7;
-      margin: 20px 0;
-    }
+    .divider { border: none; border-top: 1.5px solid #eef2f7; margin: 20px 0; }
 
-    /* Fields */
     .field { margin-bottom: 14px; }
-    label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #344054;
-      margin-bottom: 5px;
-    }
+    label { display: block; font-size: 0.82rem; font-weight: 600; color: #344054; margin-bottom: 5px; }
+
     .input-wrap { position: relative; }
     .input-wrap .pre,
     .input-wrap .suf {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.85rem;
-      color: #7a8fa6;
-      pointer-events: none;
-      font-weight: 500;
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 0.85rem; color: #7a8fa6; pointer-events: none; font-weight: 500;
     }
     .input-wrap .pre { left: 10px; }
     .input-wrap .suf { right: 10px; }
 
     input[type="number"], input[type="text"] {
-      width: 100%;
-      padding: 9px 10px;
-      border: 1.5px solid #d0d9e4;
-      border-radius: 7px;
-      font-size: 0.95rem;
-      color: #1a2740;
-      outline: none;
-      transition: border-color 0.15s, background 0.15s;
-      background: #f8fafc;
+      width: 100%; padding: 9px 10px;
+      border: 1.5px solid #d0d9e4; border-radius: 7px;
+      font-size: 0.95rem; color: #1a2740; outline: none;
+      transition: border-color 0.15s, background 0.15s; background: #f8fafc;
     }
     input[type="number"].has-pre { padding-left: 48px; }
     input[type="number"].has-suf { padding-right: 42px; }
-    input[type="number"]:focus, input[type="text"]:focus {
-      border-color: #198754;
-      background: #fff;
-    }
+    input[type="number"]:focus, input[type="text"]:focus { border-color: #198754; background: #fff; }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
     input[type="number"] { -moz-appearance: textfield; }
 
-    /* Results */
+    input[type="password"] {
+      width: 100%; padding: 9px 10px;
+      border: 1.5px solid #d0d9e4; border-radius: 7px;
+      font-size: 0.85rem; color: #1a2740; outline: none; background: #f8fafc;
+    }
+    input[type="password"]:focus { border-color: #198754; background: #fff; }
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 48px; }
+    .toggle-pw {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #8a99ad; font-size: 0.75rem;
+    }
+
     .results {
-      background: #f0f9f4;
-      border: 1.5px solid #a5d6a7;
-      border-radius: 10px;
-      padding: 16px 18px;
-      margin-top: 18px;
+      background: #f0f9f4; border: 1.5px solid #a5d6a7;
+      border-radius: 10px; padding: 16px 18px; margin-top: 18px;
     }
     .result-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-      font-size: 0.875rem;
-      color: #2d4a35;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 0; font-size: 0.875rem; color: #2d4a35;
       border-bottom: 1px solid #c8e6c9;
     }
     .result-row:last-child { border-bottom: none; }
@@ -178,41 +140,48 @@
     .result-row .sub { font-size: 0.75rem; color: #8a99ad; margin-left: 5px; }
 
     .result-total {
-      margin-top: 10px;
-      padding-top: 12px;
-      border-top: 2px solid #198754;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      margin-top: 10px; padding-top: 12px; border-top: 2px solid #198754;
+      display: flex; justify-content: space-between; align-items: center;
     }
     .result-total .lbl { font-weight: 700; font-size: 1rem; color: #198754; }
     .result-total .val { font-size: 1.2rem; font-weight: 800; color: #198754; font-variant-numeric: tabular-nums; }
 
     .result-unit {
-      background: #fff;
-      border: 1.5px solid #19875433;
-      border-radius: 8px;
-      padding: 9px 12px;
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: #fff; border: 1.5px solid #19875433; border-radius: 8px;
+      padding: 9px 12px; margin-top: 10px;
+      display: flex; justify-content: space-between; align-items: center;
     }
     .result-unit .lbl { font-weight: 600; font-size: 0.9rem; color: #344054; }
     .result-unit .val { font-size: 1.1rem; font-weight: 700; color: #198754; font-variant-numeric: tabular-nums; }
 
-    .empty-hint {
-      text-align: center;
-      color: #b0bec5;
-      font-size: 0.875rem;
-      padding: 10px 0;
+    .empty-hint { text-align: center; color: #b0bec5; font-size: 0.875rem; padding: 10px 0; }
+
+    .btn {
+      width: 100%; padding: 11px; border: none; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      transition: background 0.15s, transform 0.1s; margin-top: 12px;
     }
+    .btn:active { transform: scale(0.98); }
+    .btn-green { background: #198754; color: #fff; }
+    .btn-green:hover { background: #157347; }
+    .btn-green:disabled { background: #8bc4a8; cursor: not-allowed; }
+
+    .status-msg {
+      font-size: 0.8rem; padding: 8px 12px; border-radius: 7px;
+      margin-top: 10px; display: none;
+    }
+    .status-msg.ok   { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; display: block; }
+    .status-msg.err  { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; display: block; }
+    .status-msg.info { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; display: block; }
+
+    .gh-note { font-size: 0.73rem; color: #8a99ad; margin-top: 4px; line-height: 1.4; }
   </style>
 </head>
 <body>
 
   <div class="topbar">
-    <a class="back-link" href="index.html">← Zurück</a>
+    <a class="back" href="index.html">← Zurück</a>
+    <a class="hist" href="historie.html">📋 Preishistorie</a>
   </div>
 
   <div class="page-title">
@@ -223,7 +192,6 @@
   <div class="card">
     <div class="card-title">Schritt 1 – Preis berechnen</div>
 
-    <!-- LoA Link – URL bitte anpassen -->
     <a class="loa-btn" href="https://www.spezialitaetenliste.ch/LOACalculator.aspx" target="_blank" rel="noopener">
       <div class="loa-btn-left">
         <div class="loa-btn-icon">🔗</div>
@@ -272,25 +240,57 @@
     <div class="results" id="results">
       <p class="empty-hint">SL-Preis eingeben…</p>
     </div>
+
+    <hr class="divider" />
+    <div class="card-title">Auf GitHub speichern</div>
+
+    <div class="field">
+      <label for="ghToken">Personal Access Token</label>
+      <div class="pw-wrap">
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" oninput="speichereGHConfig()" />
+        <button class="toggle-pw" onclick="toggleToken()">👁</button>
+      </div>
+      <p class="gh-note">Wird geteilt mit dem Importware-Rechner – einmal eingeben, überall verfügbar.</p>
+    </div>
+
+    <button class="btn btn-green" id="saveBtn" onclick="speichern()" disabled>
+      💾 &nbsp;Auf GitHub speichern
+    </button>
+    <div class="status-msg" id="statusMsg"></div>
   </div>
 
   <script>
+    const $ = id => document.getElementById(id);
     const fmt = v => 'CHF\u00a0' + v.toFixed(2);
+    let letzteBerechnung = null;
 
+    // ── Berechnung ──
     function berechnen() {
-      const slStr  = document.getElementById('slPreis').value;
+      const slStr  = $('slPreis').value;
       const sl     = parseFloat(slStr);
-      const versand = parseFloat(document.getElementById('versand').value) || 0;
-      const anzahl  = Math.max(1, parseInt(document.getElementById('anzahl').value) || 1);
-      const el      = document.getElementById('results');
+      const versand = parseFloat($('versand').value) || 0;
+      const anzahl  = Math.max(1, parseInt($('anzahl').value) || 1);
+      const el      = $('results');
 
       if (!slStr || isNaN(sl) || sl < 0) {
         el.innerHTML = '<p class="empty-hint">SL-Preis eingeben…</p>';
+        $('saveBtn').disabled = true;
+        letzteBerechnung = null;
         return;
       }
 
       const gesamt      = sl + versand;
       const einzelpreis = gesamt / anzahl;
+
+      letzteBerechnung = {
+        typ: 'SL',
+        artikel:  $('artikelName').value.trim() || '(ohne Name)',
+        sl_preis: sl,
+        versand,
+        anzahl,
+        gesamtpreis: gesamt,
+        einzelpreis
+      };
 
       el.innerHTML = `
         <div class="result-row">
@@ -311,7 +311,101 @@
           <span class="val">${fmt(einzelpreis)}</span>
         </div>` : ''}
       `;
+      $('saveBtn').disabled = false;
     }
+
+    // ── Shared GitHub config ──
+    function speichereGHConfig() {
+      const bestehend = JSON.parse(localStorage.getItem('apoGH') || '{}');
+      localStorage.setItem('apoGH', JSON.stringify({
+        ...bestehend,
+        token: $('ghToken').value
+      }));
+    }
+    function toggleToken() {
+      const inp = $('ghToken');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+    function ladeConfig() {
+      const gh = JSON.parse(localStorage.getItem('apoGH') || '{}');
+      if (gh.token) $('ghToken').value = gh.token;
+      return gh;
+    }
+
+    // ── GitHub API ──
+    function ghHeaders(token) {
+      return {
+        'Authorization': 'token ' + token,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      };
+    }
+
+    async function holeHistorieDatei(gh) {
+      const url = `https://api.github.com/repos/${gh.ownerRepo || 'Jamshidimo/Preisrechner-Apo-SH'}/contents/${gh.file || 'preishistorie.json'}?ref=${gh.branch || 'main'}`;
+      const resp = await fetch(url, { headers: ghHeaders(gh.token) });
+      if (resp.status === 404) return { eintraege: [], sha: null };
+      if (!resp.ok) throw new Error(`GitHub API: ${resp.status} ${resp.statusText}`);
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      return { eintraege: Array.isArray(content) ? content : [], sha: data.sha };
+    }
+
+    async function speichereHistorieDatei(gh, eintraege, sha) {
+      const repo   = gh.ownerRepo || 'Jamshidimo/Preisrechner-Apo-SH';
+      const branch = gh.branch    || 'main';
+      const file   = gh.file      || 'preishistorie.json';
+      const letzter = eintraege[eintraege.length - 1];
+      const body = {
+        message: `Preishistorie: ${letzter.artikel} (${letzter.datum})`,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(eintraege, null, 2)))),
+        branch
+      };
+      if (sha) body.sha = sha;
+      const resp = await fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
+        method: 'PUT', headers: ghHeaders(gh.token), body: JSON.stringify(body)
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || `GitHub API: ${resp.status}`);
+      }
+    }
+
+    // ── Speichern ──
+    async function speichern() {
+      if (!letzteBerechnung) return;
+      const gh = ladeConfig();
+      if (!gh.token) {
+        zeigeStatus('Bitte GitHub Token eingeben.', 'err');
+        return;
+      }
+      $('saveBtn').disabled = true;
+      zeigeStatus('Speichere auf GitHub…', 'info');
+      try {
+        const { eintraege, sha } = await holeHistorieDatei(gh);
+        const jetzt = new Date();
+        const eintrag = {
+          ...letzteBerechnung,
+          datum: jetzt.toLocaleDateString('de-CH'),
+          zeit:  jetzt.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })
+        };
+        eintraege.push(eintrag);
+        await speichereHistorieDatei(gh, eintraege, sha);
+        zeigeStatus(`✓ „${eintrag.artikel}" gespeichert (${eintrag.datum} ${eintrag.zeit})`, 'ok');
+      } catch (e) {
+        zeigeStatus('Fehler: ' + e.message, 'err');
+      } finally {
+        $('saveBtn').disabled = false;
+      }
+    }
+
+    function zeigeStatus(msg, typ) {
+      const el = $('statusMsg');
+      el.textContent = msg;
+      el.className = 'status-msg ' + typ;
+    }
+
+    ladeConfig();
   </script>
 </body>
 </html>
