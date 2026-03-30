@@ -306,7 +306,7 @@
 
 <script>
   const $ = id => document.getElementById(id);
-  const fmt = v => 'CHF\u00a0' + Number(v).toFixed(2);
+  const fmt = v => (v != null && !isNaN(v)) ? 'CHF\u00a0' + Number(v).toFixed(2) : '–';
 
   let alleEintraege = [];
   let sortKey = 'datum';
