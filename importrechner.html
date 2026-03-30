@@ -296,6 +296,11 @@
 </head>
 <body>
 
+<div style="max-width:960px;margin:0 auto 16px;display:flex;gap:10px;flex-wrap:wrap;">
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:5px;font-size:0.85rem;color:#6b7c95;text-decoration:none;padding:6px 12px;border-radius:7px;border:1.5px solid #d0d9e4;background:#fff;">← Zurück</a>
+  <a href="historie.html" style="display:inline-flex;align-items:center;gap:5px;font-size:0.85rem;color:#e65100;text-decoration:none;padding:6px 12px;border-radius:7px;border:1.5px solid #ffcc80;background:#fff3e0;">📋 Preishistorie</a>
+</div>
+
 <div class="page-title">
   <h1>Importware-Rechner</h1>
   <p>Apotheke – Preisberechnung &amp; Preishistorie</p>
@@ -400,23 +405,23 @@
 
       <div class="field">
         <label for="ghOwnerRepo">Repository (owner/repo)</label>
-        <input type="text" id="ghOwnerRepo" value="Jamshidimo/Preisrechner-Apo-SH" placeholder="owner/repo" />
+        <input type="text" id="ghOwnerRepo" value="Jamshidimo/Preisrechner-Apo-SH" placeholder="owner/repo" oninput="speichereGHConfig()" />
       </div>
 
       <div class="field">
         <label for="ghBranch">Branch</label>
-        <input type="text" id="ghBranch" value="main" placeholder="main" />
+        <input type="text" id="ghBranch" value="main" placeholder="main" oninput="speichereGHConfig()" />
       </div>
 
       <div class="field">
         <label for="ghFile">Historien-Datei (Pfad)</label>
-        <input type="text" id="ghFile" value="preishistorie.json" placeholder="preishistorie.json" />
+        <input type="text" id="ghFile" value="preishistorie.json" placeholder="preishistorie.json" oninput="speichereGHConfig()" />
       </div>
 
       <div class="field">
         <label for="ghToken">Personal Access Token</label>
         <div class="pw-wrap">
-          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" oninput="speichereTokenLokal()" />
+          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" oninput="speichereGHConfig()" />
           <button class="toggle-pw" onclick="toggleToken()" title="Token anzeigen/verbergen">👁</button>
         </div>
         <p class="gh-note">Token wird nur im Browser (localStorage) gespeichert – nie im Code.</p>
@@ -475,6 +480,7 @@ function berechnen() {
   const marge        = ((faktor - 1) / faktor) * 100;
 
   letzteBerechnung = {
+    typ: 'Importware',
     artikel: $('artikelName').value.trim() || '(ohne Name)',
     einkaufspreis: netto,
     faktor, marge_prozent: marge,
@@ -510,18 +516,26 @@ function berechnen() {
 }
 
 // ──────────────────────────────────────────────
-// Token: localStorage
+// Shared GitHub config (localStorage key: apoGH)
 // ──────────────────────────────────────────────
-function speichereTokenLokal() {
-  localStorage.setItem('gh_token', $('ghToken').value);
+function speichereGHConfig() {
+  localStorage.setItem('apoGH', JSON.stringify({
+    token:     $('ghToken').value,
+    ownerRepo: $('ghOwnerRepo').value,
+    branch:    $('ghBranch').value,
+    file:      $('ghFile').value
+  }));
 }
 function toggleToken() {
   const inp = $('ghToken');
   inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 function ladeGespeicherteEinstellungen() {
-  const t = localStorage.getItem('gh_token');
-  if (t) $('ghToken').value = t;
+  const gh = JSON.parse(localStorage.getItem('apoGH') || '{}');
+  if (gh.token)     $('ghToken').value     = gh.token;
+  if (gh.ownerRepo) $('ghOwnerRepo').value = gh.ownerRepo;
+  if (gh.branch)    $('ghBranch').value    = gh.branch;
+  if (gh.file)      $('ghFile').value      = gh.file;
 }
 
 // ──────────────────────────────────────────────
