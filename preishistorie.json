@@ -23,5 +23,16 @@
     "einzelpreis": 5.807360000000001,
     "datum": "30.3.2026",
     "zeit": "22:22"
+  },
+  {
+    "typ": "SL",
+    "artikel": "test",
+    "sl_preis": 3,
+    "versand": 2.7,
+    "anzahl": 14,
+    "gesamtpreis": 5.7,
+    "einzelpreis": 0.40714285714285714,
+    "datum": "30.3.2026",
+    "zeit": "22:24"
   }
 ]
