@@ -9,5 +9,19 @@
     "einzelpreis": 23.975,
     "datum": "30.3.2026",
     "zeit": "22:21"
+  },
+  {
+    "typ": "Importware",
+    "artikel": "Testware NLP",
+    "einkaufspreis": 25.3,
+    "faktor": 1.6,
+    "marge_prozent": 37.50000000000001,
+    "mwst_prozent": 8.1,
+    "versand": 2.7,
+    "anzahl": 8,
+    "gesamtpreis": 46.45888000000001,
+    "einzelpreis": 5.807360000000001,
+    "datum": "30.3.2026",
+    "zeit": "22:22"
   }
 ]
