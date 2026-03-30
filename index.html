@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Importware-Rechner – Apotheke</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      max-width: 480px;
+      width: 100%;
+      padding: 36px 32px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .header-icon {
+      width: 44px;
+      height: 44px;
+      background: #0d6efd;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1a2740;
+      line-height: 1.2;
+    }
+
+    h1 span {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #5a6a80;
+      margin-top: 2px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8a99ad;
+      margin-bottom: 12px;
+      margin-top: 24px;
+    }
+
+    .section-label:first-of-type {
+      margin-top: 0;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #344054;
+      margin-bottom: 6px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap .prefix,
+    .input-wrap .suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: #7a8fa6;
+      pointer-events: none;
+      font-weight: 500;
+    }
+
+    .input-wrap .prefix { left: 12px; }
+    .input-wrap .suffix { right: 12px; }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 40px 10px 36px;
+      border: 1.5px solid #d0d9e4;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #1a2740;
+      outline: none;
+      transition: border-color 0.15s;
+      background: #f8fafc;
+    }
+
+    input[type="number"]:focus {
+      border-color: #0d6efd;
+      background: #fff;
+    }
+
+    input[type="number"].no-prefix {
+      padding-left: 12px;
+    }
+
+    /* hide spinner arrows */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    .divider {
+      border: none;
+      border-top: 1.5px solid #e8eef4;
+      margin: 24px 0;
+    }
+
+    .results {
+      background: #f4f8ff;
+      border: 1.5px solid #c7d9f7;
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      font-size: 0.9rem;
+      color: #3a4d65;
+      border-bottom: 1px solid #dde8f5;
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+    }
+
+    .result-row .val {
+      font-weight: 600;
+      color: #1a2740;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .result-row.highlight {
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 2px solid #0d6efd;
+      border-bottom: none;
+    }
+
+    .result-row.highlight .lbl {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #0d6efd;
+    }
+
+    .result-row.highlight .val {
+      font-size: 1.15rem;
+      color: #0d6efd;
+    }
+
+    .result-row.unit-price {
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      border: 1.5px solid #0d6efd22;
+    }
+
+    .result-row.unit-price .lbl {
+      font-weight: 600;
+      color: #1a2740;
+    }
+
+    .result-row.unit-price .val {
+      font-size: 1.1rem;
+      color: #0d6efd;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #a0b0c4;
+      font-size: 0.875rem;
+      padding: 8px 0;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #0d6efd;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .step-formula {
+      font-size: 0.78rem;
+      color: #8a99ad;
+      margin-top: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 14.93V18h-2v-1.07A4.002 4.002 0 0 1 8 13h2a2 2 0 1 0 2-2 4 4 0 0 1-1-7.93V2h2v1.07A4.002 4.002 0 0 1 16 7h-2a2 2 0 1 0-2 2 4 4 0 0 1 1 7.93z"/>
+        </svg>
+      </div>
+      <h1>
+        Importware-Rechner
+        <span>Apotheke – Preisberechnung</span>
+      </h1>
+    </div>
+
+    <p class="section-label">Eingabe</p>
+
+    <div class="field">
+      <label for="nettoPreis">Einkaufspreis (ohne MwSt.)</label>
+      <div class="input-wrap">
+        <span class="prefix">CHF</span>
+        <input type="number" id="nettoPreis" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="anzahl">Anzahl Artikel</label>
+      <div class="input-wrap">
+        <input type="number" id="anzahl" class="no-prefix" min="1" step="1" placeholder="1" value="1" oninput="berechnen()" />
+        <span class="suffix">Stk.</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <p class="section-label">Berechnungsschritte &amp; Ergebnis</p>
+
+    <div class="results" id="results">
+      <p class="empty-state">Bitte Einkaufspreis eingeben…</p>
+    </div>
+  </div>
+
+  <script>
+    function fmt(val) {
+      return 'CHF\u00a0' + val.toFixed(2);
+    }
+
+    function berechnen() {
+      const nettoInput = document.getElementById('nettoPreis').value;
+      const anzahlInput = document.getElementById('anzahl').value;
+      const resultsEl = document.getElementById('results');
+
+      const netto = parseFloat(nettoInput);
+      const anzahl = parseInt(anzahlInput) || 1;
+
+      if (!nettoInput || isNaN(netto) || netto < 0) {
+        resultsEl.innerHTML = '<p class="empty-state">Bitte Einkaufspreis eingeben…</p>';
+        return;
+      }
+
+      const faktor      = netto * 1.6;
+      const mwst        = 0.081;
+      const mwstBetrag  = faktor * mwst;
+      const mitMwst     = faktor + mwstBetrag;
+      const versand     = 2.70;
+      const gesamt      = mitMwst + versand;
+      const einzelpreis = gesamt / anzahl;
+
+      resultsEl.innerHTML = `
+        <div class="result-row">
+          <span class="lbl">Einkaufspreis × 1.6</span>
+          <span class="val">${fmt(faktor)}</span>
+        </div>
+        <div class="result-row">
+          <span class="lbl">MwSt. 8.1% <span class="badge">+ ${fmt(mwstBetrag)}</span></span>
+          <span class="val">${fmt(mitMwst)}</span>
+        </div>
+        <div class="result-row">
+          <span class="lbl">Versandkosten <span class="badge">+ CHF 2.70</span></span>
+          <span class="val">${fmt(gesamt)}</span>
+        </div>
+        <div class="result-row highlight">
+          <span class="lbl">Gesamtpreis</span>
+          <span class="val">${fmt(gesamt)}</span>
+        </div>
+        ${anzahl > 1 ? `
+        <div class="result-row unit-price">
+          <span class="lbl">Einzelpreis (÷ ${anzahl} Artikel)</span>
+          <span class="val">${fmt(einzelpreis)}</span>
+        </div>` : ''}
+      `;
+    }
+  </script>
+</body>
+</html>
