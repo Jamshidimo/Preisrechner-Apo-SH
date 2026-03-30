@@ -440,7 +440,7 @@
 // Helpers
 // ──────────────────────────────────────────────
 const $ = id => document.getElementById(id);
-const fmt = v => 'CHF\u00a0' + v.toFixed(2);
+const fmt = v => (v != null && !isNaN(v)) ? 'CHF\u00a0' + Number(v).toFixed(2) : '–';
 
 function aktualisiereMargeAnzeige() {
   const f = parseFloat($('faktor').value);
@@ -668,19 +668,22 @@ function renderHistorie(eintraege) {
     return;
   }
 
-  const zeilen = [...eintraege].reverse().map(e => `
-    <tr>
-      <td>${e.datum}${e.zeit ? ' ' + e.zeit : ''}</td>
-      <td>${e.artikel}</td>
-      <td class="td-val">${fmt(e.einkaufspreis)}</td>
-      <td>${e.faktor ? e.faktor.toFixed(2) : '–'}</td>
-      <td>${e.marge_prozent ? e.marge_prozent.toFixed(1) + '%' : '–'}</td>
-      <td>${e.mwst_prozent ? e.mwst_prozent + '%' : '–'}</td>
+  const zeilen = [...eintraege].reverse().map(e => {
+    const isSL   = e.typ === 'SL';
+    const ekZell = isSL ? fmt(e.sl_preis) : fmt(e.einkaufspreis);
+    return `<tr>
+      <td>${e.datum || ''}${e.zeit ? ' ' + e.zeit : ''}</td>
+      <td>${e.artikel || '–'}</td>
+      <td class="td-val">${ekZell}</td>
+      <td>${e.faktor != null ? Number(e.faktor).toFixed(2) : '–'}</td>
+      <td>${e.marge_prozent != null ? Number(e.marge_prozent).toFixed(1) + '%' : '–'}</td>
+      <td>${e.mwst_prozent != null ? e.mwst_prozent + '%' : '–'}</td>
       <td class="td-val">${fmt(e.versand)}</td>
-      <td>${e.anzahl}</td>
+      <td>${e.anzahl || 1}</td>
       <td class="td-val">${fmt(e.gesamtpreis)}</td>
       <td class="td-val">${fmt(e.einzelpreis)}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 
   $('historyContainer').innerHTML = `
     <table>
