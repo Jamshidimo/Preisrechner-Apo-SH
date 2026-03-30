@@ -9,318 +9,683 @@
 
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f0f4f8;
+      background: #eef2f7;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
+      padding: 24px 16px;
     }
 
+    .page-title {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .page-title h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1a2740;
+    }
+    .page-title p {
+      font-size: 0.875rem;
+      color: #6b7c95;
+      margin-top: 4px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 720px) {
+      .layout { grid-template-columns: 1fr; }
+      .settings-panel { order: -1; }
+    }
+
+    /* ── Cards ── */
     .card {
       background: #fff;
       border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-      max-width: 480px;
-      width: 100%;
-      padding: 36px 32px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      padding: 24px;
     }
 
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-
-    .header-icon {
-      width: 44px;
-      height: 44px;
-      background: #0d6efd;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .header-icon svg {
-      width: 24px;
-      height: 24px;
-      fill: #fff;
-    }
-
-    h1 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #1a2740;
-      line-height: 1.2;
-    }
-
-    h1 span {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 400;
-      color: #5a6a80;
-      margin-top: 2px;
-    }
-
-    .section-label {
+    .card-title {
       font-size: 0.72rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.09em;
       color: #8a99ad;
-      margin-bottom: 12px;
-      margin-top: 24px;
-    }
-
-    .section-label:first-of-type {
-      margin-top: 0;
-    }
-
-    .field {
       margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e8eef4;
     }
 
+    /* ── Form fields ── */
+    .field { margin-bottom: 14px; }
     label {
       display: block;
-      font-size: 0.875rem;
-      font-weight: 500;
+      font-size: 0.82rem;
+      font-weight: 600;
       color: #344054;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
-
-    .input-wrap {
-      position: relative;
-    }
-
-    .input-wrap .prefix,
-    .input-wrap .suffix {
+    .input-wrap { position: relative; }
+    .input-wrap .pre,
+    .input-wrap .suf {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #7a8fa6;
       pointer-events: none;
       font-weight: 500;
     }
+    .input-wrap .pre { left: 10px; }
+    .input-wrap .suf { right: 10px; }
 
-    .input-wrap .prefix { left: 12px; }
-    .input-wrap .suffix { right: 12px; }
-
-    input[type="number"] {
+    input[type="number"], input[type="text"] {
       width: 100%;
-      padding: 10px 40px 10px 36px;
+      padding: 9px 10px;
       border: 1.5px solid #d0d9e4;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 7px;
+      font-size: 0.95rem;
       color: #1a2740;
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, background 0.15s;
       background: #f8fafc;
     }
-
-    input[type="number"]:focus {
+    input[type="number"].has-pre { padding-left: 48px; }
+    input[type="number"].has-suf { padding-right: 42px; }
+    input[type="number"]:focus, input[type="text"]:focus {
       border-color: #0d6efd;
       background: #fff;
     }
-
-    input[type="number"].no-prefix {
-      padding-left: 12px;
-    }
-
-    /* hide spinner arrows */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
     input[type="number"] { -moz-appearance: textfield; }
 
-    .divider {
-      border: none;
-      border-top: 1.5px solid #e8eef4;
-      margin: 24px 0;
+    input[type="password"] {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1.5px solid #d0d9e4;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      color: #1a2740;
+      outline: none;
+      background: #f8fafc;
+      transition: border-color 0.15s;
     }
+    input[type="password"]:focus { border-color: #0d6efd; background: #fff; }
 
+    /* Faktor row with margin badge */
+    .faktor-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .faktor-row .field { flex: 1; margin-bottom: 0; }
+    .marge-badge {
+      flex-shrink: 0;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1.5px solid #a5d6a7;
+      border-radius: 7px;
+      padding: 9px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      min-width: 78px;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .marge-badge span { display: block; font-size: 0.68rem; font-weight: 500; color: #4caf50; }
+
+    /* ── Results ── */
     .results {
       background: #f4f8ff;
       border: 1.5px solid #c7d9f7;
       border-radius: 10px;
-      padding: 18px 20px;
+      padding: 16px 18px;
+      margin-top: 18px;
     }
-
     .result-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 7px 0;
-      font-size: 0.9rem;
+      padding: 6px 0;
+      font-size: 0.875rem;
       color: #3a4d65;
       border-bottom: 1px solid #dde8f5;
     }
+    .result-row:last-child { border-bottom: none; }
+    .result-row .val { font-weight: 600; color: #1a2740; font-variant-numeric: tabular-nums; }
+    .result-row .sub { font-size: 0.75rem; color: #8a99ad; margin-left: 6px; }
 
-    .result-row:last-child {
-      border-bottom: none;
-    }
-
-    .result-row .val {
-      font-weight: 600;
-      color: #1a2740;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .result-row.highlight {
-      margin-top: 8px;
+    .result-total {
+      margin-top: 10px;
       padding-top: 12px;
       border-top: 2px solid #0d6efd;
-      border-bottom: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    .result-total .lbl { font-weight: 700; font-size: 1rem; color: #0d6efd; }
+    .result-total .val { font-size: 1.2rem; font-weight: 800; color: #0d6efd; font-variant-numeric: tabular-nums; }
 
-    .result-row.highlight .lbl {
-      font-weight: 700;
-      font-size: 1rem;
-      color: #0d6efd;
-    }
-
-    .result-row.highlight .val {
-      font-size: 1.15rem;
-      color: #0d6efd;
-    }
-
-    .result-row.unit-price {
+    .result-unit {
       background: #fff;
+      border: 1.5px solid #0d6efd33;
       border-radius: 8px;
-      padding: 10px 12px;
+      padding: 9px 12px;
       margin-top: 10px;
-      border: 1.5px solid #0d6efd22;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    .result-unit .lbl { font-weight: 600; font-size: 0.9rem; color: #344054; }
+    .result-unit .val { font-size: 1.1rem; font-weight: 700; color: #0d6efd; font-variant-numeric: tabular-nums; }
 
-    .result-row.unit-price .lbl {
-      font-weight: 600;
-      color: #1a2740;
-    }
-
-    .result-row.unit-price .val {
-      font-size: 1.1rem;
-      color: #0d6efd;
-    }
-
-    .empty-state {
+    .empty-hint {
       text-align: center;
-      color: #a0b0c4;
+      color: #b0bec5;
       font-size: 0.875rem;
-      padding: 8px 0;
+      padding: 10px 0;
     }
 
-    .badge {
-      display: inline-block;
-      background: #e8f0fe;
-      color: #0d6efd;
-      border-radius: 20px;
-      padding: 2px 10px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-left: 6px;
-      vertical-align: middle;
+    /* ── Save button ── */
+    .btn {
+      width: 100%;
+      padding: 11px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 12px;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: #0d6efd; color: #fff; }
+    .btn-primary:hover { background: #0b5ed7; }
+    .btn-primary:disabled { background: #90b8f8; cursor: not-allowed; }
+
+    /* ── Status message ── */
+    .status-msg {
+      font-size: 0.8rem;
+      padding: 8px 12px;
+      border-radius: 7px;
+      margin-top: 10px;
+      display: none;
+    }
+    .status-msg.ok  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; display: block; }
+    .status-msg.err { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; display: block; }
+    .status-msg.info { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; display: block; }
+
+    /* ── History table ── */
+    .history-wrap {
+      overflow-x: auto;
+      margin-top: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    th {
+      background: #f0f4f8;
+      color: #5a6a80;
+      font-weight: 700;
+      text-align: left;
+      padding: 8px 10px;
+      white-space: nowrap;
+      border-bottom: 2px solid #d0d9e4;
+    }
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #eef2f7;
+      color: #344054;
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+    .td-val { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .empty-history {
+      text-align: center;
+      color: #b0bec5;
+      padding: 20px;
+      font-size: 0.875rem;
     }
 
-    .step-formula {
-      font-size: 0.78rem;
+    /* ── Settings divider ── */
+    .settings-divider {
+      border: none;
+      border-top: 1.5px solid #eef2f7;
+      margin: 18px 0;
+    }
+
+    .gh-note {
+      font-size: 0.73rem;
       color: #8a99ad;
-      margin-top: 3px;
+      margin-top: 4px;
+      line-height: 1.4;
     }
+
+    .toggle-pw {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #8a99ad;
+      font-size: 0.75rem;
+      padding: 2px 4px;
+    }
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 48px; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="header">
-      <div class="header-icon">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 14.93V18h-2v-1.07A4.002 4.002 0 0 1 8 13h2a2 2 0 1 0 2-2 4 4 0 0 1-1-7.93V2h2v1.07A4.002 4.002 0 0 1 16 7h-2a2 2 0 1 0-2 2 4 4 0 0 1 1 7.93z"/>
-        </svg>
+
+<div class="page-title">
+  <h1>Importware-Rechner</h1>
+  <p>Apotheke – Preisberechnung &amp; Preishistorie</p>
+</div>
+
+<div class="layout">
+
+  <!-- ══════════════════════════════
+       LEFT: Calculator + History
+  ══════════════════════════════ -->
+  <div class="left-col">
+
+    <!-- Calculator card -->
+    <div class="card">
+      <div class="card-title">Berechnung</div>
+
+      <div class="field">
+        <label for="artikelName">Artikelname</label>
+        <input type="text" id="artikelName" placeholder="z.B. Voltaren Emulgel 100g" oninput="berechnen()" />
       </div>
-      <h1>
-        Importware-Rechner
-        <span>Apotheke – Preisberechnung</span>
-      </h1>
+
+      <div class="field">
+        <label for="nettoPreis">Einkaufspreis (ohne MwSt.)</label>
+        <div class="input-wrap">
+          <span class="pre">CHF</span>
+          <input type="number" id="nettoPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="anzahl">Anzahl Artikel</label>
+        <div class="input-wrap">
+          <input type="number" id="anzahl" class="has-suf" min="1" step="1" placeholder="1" value="1" oninput="berechnen()" />
+          <span class="suf">Stk.</span>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="results" id="results">
+        <p class="empty-hint">Einkaufspreis eingeben…</p>
+      </div>
+
+      <button class="btn btn-primary" id="saveBtn" onclick="speichern()" disabled>
+        💾 &nbsp;Auf GitHub speichern
+      </button>
+      <div class="status-msg" id="statusMsg"></div>
     </div>
 
-    <p class="section-label">Eingabe</p>
-
-    <div class="field">
-      <label for="nettoPreis">Einkaufspreis (ohne MwSt.)</label>
-      <div class="input-wrap">
-        <span class="prefix">CHF</span>
-        <input type="number" id="nettoPreis" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+    <!-- History card -->
+    <div class="card" style="margin-top:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:0;flex:1;">Preishistorie</div>
+        <button onclick="ladeHistorie()" style="font-size:0.75rem;padding:4px 10px;border:1.5px solid #d0d9e4;border-radius:6px;background:#f8fafc;cursor:pointer;color:#344054;font-weight:600;">↻ Aktualisieren</button>
+      </div>
+      <div class="history-wrap">
+        <div id="historyContainer"><p class="empty-history">Noch keine Einträge – GitHub-Einstellungen konfigurieren und Berechnungen speichern.</p></div>
       </div>
     </div>
 
-    <div class="field">
-      <label for="anzahl">Anzahl Artikel</label>
-      <div class="input-wrap">
-        <input type="number" id="anzahl" class="no-prefix" min="1" step="1" placeholder="1" value="1" oninput="berechnen()" />
-        <span class="suffix">Stk.</span>
+  </div>
+
+  <!-- ══════════════════════════════
+       RIGHT: Settings
+  ══════════════════════════════ -->
+  <div class="settings-panel">
+    <div class="card">
+      <div class="card-title">Einstellungen</div>
+
+      <!-- Faktor / Marge -->
+      <div class="faktor-row" style="margin-bottom:14px;">
+        <div class="field">
+          <label for="faktor">Faktor (Marge)</label>
+          <input type="number" id="faktor" min="1" step="0.01" value="1.6" oninput="aktualisiereMargeAnzeige(); berechnen()" />
+        </div>
+        <div class="marge-badge" id="margeBadge">
+          37.5%
+          <span>Handelsmarge</span>
+        </div>
       </div>
-    </div>
+      <p style="font-size:0.73rem;color:#8a99ad;margin-top:-8px;margin-bottom:14px;">
+        Marge = (Faktor − 1) ÷ Faktor × 100
+      </p>
 
-    <hr class="divider" />
+      <div class="field">
+        <label for="mwstSatz">Mehrwertsteuer (%)</label>
+        <div class="input-wrap">
+          <input type="number" id="mwstSatz" class="has-suf" min="0" step="0.1" value="8.1" oninput="berechnen()" />
+          <span class="suf">%</span>
+        </div>
+      </div>
 
-    <p class="section-label">Berechnungsschritte &amp; Ergebnis</p>
+      <div class="field">
+        <label for="versandKosten">Versandkosten</label>
+        <div class="input-wrap">
+          <span class="pre">CHF</span>
+          <input type="number" id="versandKosten" class="has-pre" min="0" step="0.1" value="2.70" oninput="berechnen()" />
+        </div>
+      </div>
 
-    <div class="results" id="results">
-      <p class="empty-state">Bitte Einkaufspreis eingeben…</p>
+      <hr class="settings-divider" />
+      <div class="card-title" style="margin-bottom:12px;">GitHub Speichern</div>
+
+      <div class="field">
+        <label for="ghOwnerRepo">Repository (owner/repo)</label>
+        <input type="text" id="ghOwnerRepo" value="Jamshidimo/Preisrechner-Apo-SH" placeholder="owner/repo" />
+      </div>
+
+      <div class="field">
+        <label for="ghBranch">Branch</label>
+        <input type="text" id="ghBranch" value="main" placeholder="main" />
+      </div>
+
+      <div class="field">
+        <label for="ghFile">Historien-Datei (Pfad)</label>
+        <input type="text" id="ghFile" value="preishistorie.json" placeholder="preishistorie.json" />
+      </div>
+
+      <div class="field">
+        <label for="ghToken">Personal Access Token</label>
+        <div class="pw-wrap">
+          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" oninput="speichereTokenLokal()" />
+          <button class="toggle-pw" onclick="toggleToken()" title="Token anzeigen/verbergen">👁</button>
+        </div>
+        <p class="gh-note">Token wird nur im Browser (localStorage) gespeichert – nie im Code.</p>
+      </div>
+
+      <button class="btn btn-primary" style="margin-top:4px;" onclick="ladeHistorie()">
+        ↻ &nbsp;Historie laden
+      </button>
     </div>
   </div>
 
-  <script>
-    function fmt(val) {
-      return 'CHF\u00a0' + val.toFixed(2);
-    }
+</div>
 
-    function berechnen() {
-      const nettoInput = document.getElementById('nettoPreis').value;
-      const anzahlInput = document.getElementById('anzahl').value;
-      const resultsEl = document.getElementById('results');
+<script>
+// ──────────────────────────────────────────────
+// Helpers
+// ──────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const fmt = v => 'CHF\u00a0' + v.toFixed(2);
 
-      const netto = parseFloat(nettoInput);
-      const anzahl = parseInt(anzahlInput) || 1;
+function aktualisiereMargeAnzeige() {
+  const f = parseFloat($('faktor').value);
+  if (!isNaN(f) && f > 1) {
+    const marge = ((f - 1) / f) * 100;
+    $('margeBadge').innerHTML = marge.toFixed(1) + '%<span>Handelsmarge</span>';
+  } else {
+    $('margeBadge').innerHTML = '—<span>Handelsmarge</span>';
+  }
+}
 
-      if (!nettoInput || isNaN(netto) || netto < 0) {
-        resultsEl.innerHTML = '<p class="empty-state">Bitte Einkaufspreis eingeben…</p>';
-        return;
-      }
+// ──────────────────────────────────────────────
+// Calculator
+// ──────────────────────────────────────────────
+let letzteBerechnung = null;
 
-      const faktor      = netto * 1.6;
-      const mwst        = 0.081;
-      const mwstBetrag  = faktor * mwst;
-      const mitMwst     = faktor + mwstBetrag;
-      const versand     = 2.70;
-      const gesamt      = mitMwst + versand;
-      const einzelpreis = gesamt / anzahl;
+function berechnen() {
+  const nettoStr = $('nettoPreis').value;
+  const netto    = parseFloat(nettoStr);
+  const anzahl   = Math.max(1, parseInt($('anzahl').value) || 1);
+  const faktor   = parseFloat($('faktor').value) || 1.6;
+  const mwstPct  = parseFloat($('mwstSatz').value) || 8.1;
+  const versand  = parseFloat($('versandKosten').value) || 2.70;
 
-      resultsEl.innerHTML = `
-        <div class="result-row">
-          <span class="lbl">Einkaufspreis × 1.6</span>
-          <span class="val">${fmt(faktor)}</span>
-        </div>
-        <div class="result-row">
-          <span class="lbl">MwSt. 8.1% <span class="badge">+ ${fmt(mwstBetrag)}</span></span>
-          <span class="val">${fmt(mitMwst)}</span>
-        </div>
-        <div class="result-row">
-          <span class="lbl">Versandkosten <span class="badge">+ CHF 2.70</span></span>
-          <span class="val">${fmt(gesamt)}</span>
-        </div>
-        <div class="result-row highlight">
-          <span class="lbl">Gesamtpreis</span>
-          <span class="val">${fmt(gesamt)}</span>
-        </div>
-        ${anzahl > 1 ? `
-        <div class="result-row unit-price">
-          <span class="lbl">Einzelpreis (÷ ${anzahl} Artikel)</span>
-          <span class="val">${fmt(einzelpreis)}</span>
-        </div>` : ''}
-      `;
-    }
-  </script>
+  if (!nettoStr || isNaN(netto) || netto < 0) {
+    $('results').innerHTML = '<p class="empty-hint">Einkaufspreis eingeben…</p>';
+    $('saveBtn').disabled = true;
+    letzteBerechnung = null;
+    return;
+  }
+
+  const nachFaktor   = netto * faktor;
+  const mwstBetrag   = nachFaktor * (mwstPct / 100);
+  const mitMwst      = nachFaktor + mwstBetrag;
+  const gesamt       = mitMwst + versand;
+  const einzelpreis  = gesamt / anzahl;
+  const marge        = ((faktor - 1) / faktor) * 100;
+
+  letzteBerechnung = {
+    artikel: $('artikelName').value.trim() || '(ohne Name)',
+    einkaufspreis: netto,
+    faktor, marge_prozent: marge,
+    mwst_prozent: mwstPct, versand,
+    anzahl, gesamtpreis: gesamt, einzelpreis
+  };
+
+  $('results').innerHTML = `
+    <div class="result-row">
+      <span>× ${faktor.toFixed(2)} <small class="sub">(${marge.toFixed(1)}% Marge)</small></span>
+      <span class="val">${fmt(nachFaktor)}</span>
+    </div>
+    <div class="result-row">
+      <span>+ MwSt. ${mwstPct}%<small class="sub"> (+${fmt(mwstBetrag)})</small></span>
+      <span class="val">${fmt(mitMwst)}</span>
+    </div>
+    <div class="result-row">
+      <span>+ Versandkosten<small class="sub"> (+${fmt(versand)})</small></span>
+      <span class="val">${fmt(gesamt)}</span>
+    </div>
+    <div class="result-total">
+      <span class="lbl">Gesamtpreis</span>
+      <span class="val">${fmt(gesamt)}</span>
+    </div>
+    ${anzahl > 1 ? `
+    <div class="result-unit">
+      <span class="lbl">Einzelpreis (÷ ${anzahl} Stk.)</span>
+      <span class="val">${fmt(einzelpreis)}</span>
+    </div>` : ''}
+  `;
+
+  $('saveBtn').disabled = false;
+}
+
+// ──────────────────────────────────────────────
+// Token: localStorage
+// ──────────────────────────────────────────────
+function speichereTokenLokal() {
+  localStorage.setItem('gh_token', $('ghToken').value);
+}
+function toggleToken() {
+  const inp = $('ghToken');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+function ladeGespeicherteEinstellungen() {
+  const t = localStorage.getItem('gh_token');
+  if (t) $('ghToken').value = t;
+}
+
+// ──────────────────────────────────────────────
+// GitHub API
+// ──────────────────────────────────────────────
+function ghHeaders() {
+  return {
+    'Authorization': 'token ' + $('ghToken').value.trim(),
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+}
+
+function ghUrl() {
+  const repo   = $('ghOwnerRepo').value.trim();
+  const branch = $('ghBranch').value.trim();
+  const file   = $('ghFile').value.trim();
+  return `https://api.github.com/repos/${repo}/contents/${file}?ref=${branch}`;
+}
+
+async function holeHistorieDatei() {
+  const resp = await fetch(ghUrl(), { headers: ghHeaders() });
+  if (resp.status === 404) return { eintraege: [], sha: null };
+  if (!resp.ok) throw new Error(`GitHub API: ${resp.status} ${resp.statusText}`);
+  const data = await resp.json();
+  const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
+  return { eintraege: Array.isArray(content) ? content : [], sha: data.sha };
+}
+
+async function speichereHistorieDatei(eintraege, sha) {
+  const repo   = $('ghOwnerRepo').value.trim();
+  const branch = $('ghBranch').value.trim();
+  const file   = $('ghFile').value.trim();
+  const url    = `https://api.github.com/repos/${repo}/contents/${file}`;
+
+  const body = {
+    message: `Preishistorie: ${eintraege[eintraege.length - 1].artikel} (${eintraege[eintraege.length - 1].datum})`,
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(eintraege, null, 2)))),
+    branch
+  };
+  if (sha) body.sha = sha;
+
+  const resp = await fetch(url, {
+    method: 'PUT',
+    headers: ghHeaders(),
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub API: ${resp.status}`);
+  }
+}
+
+// ──────────────────────────────────────────────
+// Save button
+// ──────────────────────────────────────────────
+async function speichern() {
+  if (!letzteBerechnung) return;
+
+  const token = $('ghToken').value.trim();
+  if (!token) {
+    zeigeStatus('Bitte zuerst einen GitHub Personal Access Token eingeben.', 'err');
+    return;
+  }
+
+  $('saveBtn').disabled = true;
+  zeigeStatus('Speichere auf GitHub…', 'info');
+
+  try {
+    const { eintraege, sha } = await holeHistorieDatei();
+
+    const jetzt = new Date();
+    const eintrag = {
+      ...letzteBerechnung,
+      datum: jetzt.toLocaleDateString('de-CH'),
+      zeit:  jetzt.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })
+    };
+
+    eintraege.push(eintrag);
+    await speichereHistorieDatei(eintraege, sha);
+
+    zeigeStatus(`✓ „${eintrag.artikel}" gespeichert (${eintrag.datum} ${eintrag.zeit})`, 'ok');
+    renderHistorie(eintraege);
+  } catch (e) {
+    zeigeStatus('Fehler: ' + e.message, 'err');
+  } finally {
+    $('saveBtn').disabled = false;
+  }
+}
+
+// ──────────────────────────────────────────────
+// Load history
+// ──────────────────────────────────────────────
+async function ladeHistorie() {
+  const token = $('ghToken').value.trim();
+  if (!token) {
+    zeigeStatus('Bitte GitHub Token eingeben um die Historie zu laden.', 'err');
+    return;
+  }
+  zeigeStatus('Lade Preishistorie…', 'info');
+  try {
+    const { eintraege } = await holeHistorieDatei();
+    renderHistorie(eintraege);
+    zeigeStatus(`${eintraege.length} Einträge geladen.`, 'ok');
+    setTimeout(() => { $('statusMsg').className = 'status-msg'; }, 3000);
+  } catch (e) {
+    zeigeStatus('Fehler beim Laden: ' + e.message, 'err');
+  }
+}
+
+function renderHistorie(eintraege) {
+  if (!eintraege.length) {
+    $('historyContainer').innerHTML = '<p class="empty-history">Noch keine Einträge gespeichert.</p>';
+    return;
+  }
+
+  const zeilen = [...eintraege].reverse().map(e => `
+    <tr>
+      <td>${e.datum}${e.zeit ? ' ' + e.zeit : ''}</td>
+      <td>${e.artikel}</td>
+      <td class="td-val">${fmt(e.einkaufspreis)}</td>
+      <td>${e.faktor ? e.faktor.toFixed(2) : '–'}</td>
+      <td>${e.marge_prozent ? e.marge_prozent.toFixed(1) + '%' : '–'}</td>
+      <td>${e.mwst_prozent ? e.mwst_prozent + '%' : '–'}</td>
+      <td class="td-val">${fmt(e.versand)}</td>
+      <td>${e.anzahl}</td>
+      <td class="td-val">${fmt(e.gesamtpreis)}</td>
+      <td class="td-val">${fmt(e.einzelpreis)}</td>
+    </tr>`).join('');
+
+  $('historyContainer').innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Datum / Zeit</th>
+          <th>Artikel</th>
+          <th>EK (netto)</th>
+          <th>Faktor</th>
+          <th>Marge</th>
+          <th>MwSt.</th>
+          <th>Versand</th>
+          <th>Stk.</th>
+          <th>Gesamt</th>
+          <th>Einzelpreis</th>
+        </tr>
+      </thead>
+      <tbody>${zeilen}</tbody>
+    </table>`;
+}
+
+// ──────────────────────────────────────────────
+// Status helper
+// ──────────────────────────────────────────────
+function zeigeStatus(msg, typ) {
+  const el = $('statusMsg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + typ;
+}
+
+// ──────────────────────────────────────────────
+// Init
+// ──────────────────────────────────────────────
+ladeGespeicherteEinstellungen();
+aktualisiereMargeAnzeige();
+</script>
 </body>
 </html>
