@@ -228,13 +228,13 @@
       <div class="loa-btn-left">
         <div class="loa-btn-icon">🔗</div>
         <div class="loa-btn-text">
-          <strong>LoA Kalkulator öffnen</strong>
+          <strong>BAG SL-Rechner öffnen</strong>
           <span>spezialitaetenliste.ch/LOACalculator</span>
         </div>
       </div>
       <div class="loa-btn-arrow">↗</div>
     </a>
-    <p class="loa-hint">Preis dort berechnen, dann unten eintragen.</p>
+    <p class="loa-hint">Preis im BAG SL-Rechner berechnen, dann unten eintragen.</p>
 
     <hr class="divider" />
 
@@ -246,7 +246,7 @@
     </div>
 
     <div class="field">
-      <label for="slPreis">Preis aus LoA Kalkulator (CHF)</label>
+      <label for="slPreis">Preis aus BAG SL-Rechner (CHF)</label>
       <div class="input-wrap">
         <span class="pre">CHF</span>
         <input type="number" id="slPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
@@ -294,7 +294,7 @@
 
       el.innerHTML = `
         <div class="result-row">
-          <span>SL-Preis (aus LoA Kalkulator)</span>
+          <span>SL-Preis (aus BAG SL-Rechner)</span>
           <span class="val">${fmt(sl)}</span>
         </div>
         <div class="result-row">
