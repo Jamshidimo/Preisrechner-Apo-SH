@@ -49,12 +49,12 @@
 
     .filter-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
       gap: 12px;
       align-items: end;
     }
-    @media (max-width: 800px) {
-      .filter-grid { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 900px) {
+      .filter-grid { grid-template-columns: 1fr 1fr 1fr; }
     }
     @media (max-width: 480px) {
       .filter-grid { grid-template-columns: 1fr; }
@@ -241,6 +241,10 @@
         <input type="text" id="filterArtikel" placeholder="z.B. Voltaren…" oninput="filtereUndRendere()" />
       </div>
       <div class="filter-field">
+        <label for="filterLieferant">Lieferant</label>
+        <input type="text" id="filterLieferant" placeholder="z.B. Zur Rose…" oninput="filtereUndRendere()" />
+      </div>
+      <div class="filter-field">
         <label for="filterTyp">Typ</label>
         <select id="filterTyp" onchange="filtereUndRendere()">
           <option value="">Alle</option>
@@ -276,6 +280,7 @@
               <th onclick="sortiere('datum')"        >Datum / Zeit    <span class="sort-icon" id="s-datum">↕</span></th>
               <th onclick="sortiere('typ')"          >Typ             <span class="sort-icon" id="s-typ">↕</span></th>
               <th onclick="sortiere('artikel')"      >Artikelname     <span class="sort-icon" id="s-artikel">↕</span></th>
+              <th onclick="sortiere('lieferant')"    >Lieferant       <span class="sort-icon" id="s-lieferant">↕</span></th>
               <th onclick="sortiere('einkaufspreis')">EK-Preis        <span class="sort-icon" id="s-einkaufspreis">↕</span></th>
               <th onclick="sortiere('faktor')"       >Faktor / Marge  <span class="sort-icon" id="s-faktor">↕</span></th>
               <th onclick="sortiere('versand')"      >Versand         <span class="sort-icon" id="s-versand">↕</span></th>
@@ -377,8 +382,9 @@
 
   // ── Filter ──
   function filtereUndRendere() {
-    const textFilter = $('filterArtikel').value.toLowerCase().trim();
-    const typFilter  = $('filterTyp').value;
+    const textFilter      = $('filterArtikel').value.toLowerCase().trim();
+    const lieferantFilter = $('filterLieferant').value.toLowerCase().trim();
+    const typFilter       = $('filterTyp').value;
     const vonStr     = $('filterVon').value;   // YYYY-MM-DD
     const bisStr     = $('filterBis').value;
 
@@ -386,7 +392,8 @@
     const bis = bisStr ? new Date(bisStr + 'T23:59:59') : null;
 
     let gefiltert = alleEintraege.filter(e => {
-      if (textFilter && !(e.artikel || '').toLowerCase().includes(textFilter)) return false;
+      if (textFilter      && !(e.artikel   || '').toLowerCase().includes(textFilter))      return false;
+      if (lieferantFilter && !(e.lieferant || '').toLowerCase().includes(lieferantFilter)) return false;
 
       // Typ filter (alte Einträge ohne typ → als Importware behandeln)
       const eTyp = e.typ || 'Importware';
@@ -498,6 +505,7 @@
         <td>${e.datum || ''}${e.zeit ? ' ' + e.zeit : ''}</td>
         <td><span class="badge-typ ${badgeClass}">${typLabel}</span></td>
         <td><strong>${e.artikel || '–'}</strong></td>
+        <td>${e.lieferant || '–'}</td>
         <td class="td-val">${ekPreis}</td>
         <td>${faktorInfo}</td>
         <td class="td-val">${e.versand != null ? fmt(e.versand) : '–'}</td>
@@ -512,10 +520,11 @@
 
   // ── Reset ──
   function resetFilter() {
-    $('filterArtikel').value = '';
-    $('filterTyp').value = '';
-    $('filterVon').value = '';
-    $('filterBis').value = '';
+    $('filterArtikel').value   = '';
+    $('filterLieferant').value = '';
+    $('filterTyp').value       = '';
+    $('filterVon').value       = '';
+    $('filterBis').value       = '';
     filtereUndRendere();
   }
 

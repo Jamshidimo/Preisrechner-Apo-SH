@@ -214,6 +214,19 @@
     </div>
 
     <div class="field">
+      <label for="lieferant">Lieferant</label>
+      <input type="text" id="lieferant" placeholder="z.B. Zur Rose, Galexis…" oninput="berechnen()" />
+    </div>
+
+    <div class="field">
+      <label for="ekPreis">Einkaufspreis (ohne MwSt.)</label>
+      <div class="input-wrap">
+        <span class="pre">CHF</span>
+        <input type="number" id="ekPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+      </div>
+    </div>
+
+    <div class="field">
       <label for="slPreis">Preis aus BAG SL-Rechner (CHF)</label>
       <div class="input-wrap">
         <span class="pre">CHF</span>
@@ -222,7 +235,7 @@
     </div>
 
     <div class="field">
-      <label for="versand">Versandkosten</label>
+      <label for="versand">Versandkosten (inkl. MwSt.)</label>
       <div class="input-wrap">
         <span class="pre">CHF</span>
         <input type="number" id="versand" class="has-pre" min="0" step="0.1" value="2.70" oninput="berechnen()" />
@@ -283,12 +296,14 @@
       const einzelpreis = gesamt / anzahl;
 
       letzteBerechnung = {
-        typ: 'SL',
-        artikel:  $('artikelName').value.trim() || '(ohne Name)',
-        sl_preis: sl,
+        typ:          'SL',
+        artikel:      $('artikelName').value.trim() || '(ohne Name)',
+        lieferant:    $('lieferant').value.trim() || '',
+        einkaufspreis: parseFloat($('ekPreis').value) || null,
+        sl_preis:     sl,
         versand,
         anzahl,
-        gesamtpreis: gesamt,
+        gesamtpreis:  gesamt,
         einzelpreis
       };
 
