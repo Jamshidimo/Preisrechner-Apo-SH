@@ -204,6 +204,61 @@
       font-size: 0.9rem;
     }
     .no-data p { margin-top: 8px; font-size: 0.8rem; }
+
+    /* ── Action buttons ── */
+    .btn-icon {
+      background: none;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 4px 7px;
+      font-size: 0.85rem;
+      line-height: 1;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .btn-icon:hover { background: #f5f5f5; border-color: #bbb; }
+    .btn-icon.del:hover { background: #ffebee; border-color: #ef9a9a; }
+    .btn-icon.edit:hover { background: #e3f2fd; border-color: #90caf9; }
+
+    /* ── Edit modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal h2 { font-size: 1.1rem; font-weight: 800; color: #1a2740; margin-bottom: 18px; }
+    .modal .field { margin-bottom: 13px; }
+    .modal label { display: block; font-size: 0.8rem; font-weight: 600; color: #344054; margin-bottom: 4px; }
+    .modal input {
+      width: 100%; padding: 8px 10px;
+      border: 1.5px solid #d0d9e4; border-radius: 7px;
+      font-size: 0.9rem; color: #1a2740; background: #f8fafc; outline: none;
+    }
+    .modal input:focus { border-color: #0d6efd; background: #fff; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-actions button {
+      flex: 1; padding: 10px; border: none; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-save-edit { background: #0d6efd; color: #fff; }
+    .btn-save-edit:hover { background: #0b5ed7; }
+    .btn-cancel { background: #f0f4f8; color: #344054; }
+    .btn-cancel:hover { background: #e0e8f0; }
   </style>
 </head>
 <body>
@@ -287,11 +342,32 @@
               <th>Stk.</th>
               <th onclick="sortiere('gesamtpreis')"  >Gesamtpreis     <span class="sort-icon" id="s-gesamtpreis">↕</span></th>
               <th onclick="sortiere('einzelpreis')"  >Einzelpreis     <span class="sort-icon" id="s-einzelpreis">↕</span></th>
+              <th style="text-align:center;">Aktionen</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
         </table>
       </div>
+    </div>
+  </div>
+
+  <!-- Edit modal -->
+  <div class="modal-backdrop" id="editModal">
+    <div class="modal">
+      <h2>✏️ Eintrag bearbeiten</h2>
+      <div class="field"><label>Datum</label><input type="text" id="editDatum" placeholder="31.03.2026" /></div>
+      <div class="field"><label>Zeit</label><input type="text" id="editZeit" placeholder="14:30" /></div>
+      <div class="field"><label>Artikelname</label><input type="text" id="editArtikel" /></div>
+      <div class="field"><label>Lieferant</label><input type="text" id="editLieferant" /></div>
+      <div class="field" id="editEKRow"><label id="editEKLabel">Einkaufspreis (ohne MwSt.)</label><input type="number" id="editEK" step="0.01" min="0" /></div>
+      <div class="field" id="editSLRow" style="display:none;"><label>SL-Preis (aus BAG Rechner)</label><input type="number" id="editSL" step="0.01" min="0" /></div>
+      <div class="field"><label>Versandkosten (inkl. MwSt.)</label><input type="number" id="editVersand" step="0.01" min="0" /></div>
+      <div class="field"><label>Anzahl</label><input type="number" id="editAnzahl" step="1" min="1" /></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="schliesseModal()">Abbrechen</button>
+        <button class="btn-save-edit" onclick="speichereBearbeitung()">💾 Speichern</button>
+      </div>
+      <div class="status-msg" id="modalStatus" style="margin-top:10px;"></div>
     </div>
   </div>
 
@@ -487,6 +563,7 @@
 
     // Rows
     const zeilen = eintraege.map(e => {
+      const origIdx = alleEintraege.indexOf(e);
       const typ     = e.typ || 'Importware';
       const isSL    = typ === 'SL';
       const badgeClass = isSL ? 'badge-sl' : 'badge-import';
@@ -513,11 +590,148 @@
         <td>${e.anzahl || 1}</td>
         <td class="td-preis">${e.gesamtpreis != null ? fmt(e.gesamtpreis) : '–'}</td>
         <td class="td-preis" style="color:#e65100;">${e.einzelpreis != null ? fmt(e.einzelpreis) : '–'}</td>
+        <td style="text-align:center;white-space:nowrap;">
+          <button class="btn-icon edit" onclick="bearbeiteEintrag(${origIdx})" title="Bearbeiten">✏️</button>
+          <button class="btn-icon del"  onclick="loescheEintrag(${origIdx})"   title="Löschen">🗑️</button>
+        </td>
       </tr>`;
     }).join('');
 
     $('tableBody').innerHTML = zeilen;
   }
+
+  // ── Save all entries to GitHub ──
+  async function speichereAlleEintraege(commitMsg) {
+    const gh     = ladeConfig();
+    const repo   = gh.ownerRepo || 'Jamshidimo/Preisrechner-Apo-SH';
+    const branch = gh.branch    || 'main';
+    const file   = gh.file      || 'preishistorie.json';
+
+    // Fetch fresh SHA (retry once on conflict)
+    for (let i = 0; i < 2; i++) {
+      const getResp = await fetch(
+        `https://api.github.com/repos/${repo}/contents/${file}?ref=${branch}`,
+        { headers: ghHeaders(gh.token) }
+      );
+      const sha = getResp.ok ? (await getResp.json()).sha : null;
+
+      const putResp = await fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
+        method: 'PUT',
+        headers: ghHeaders(gh.token),
+        body: JSON.stringify({
+          message: commitMsg || 'Preishistorie aktualisiert',
+          content: btoa(unescape(encodeURIComponent(JSON.stringify(alleEintraege, null, 2)))),
+          branch,
+          ...(sha ? { sha } : {})
+        })
+      });
+      if (putResp.ok) return;
+      const err = await putResp.json().catch(() => ({}));
+      if (i === 0 && err.message && err.message.includes('does not match')) continue;
+      throw new Error(err.message || `GitHub API: ${putResp.status}`);
+    }
+  }
+
+  // ── Delete ──
+  async function loescheEintrag(origIdx) {
+    const e = alleEintraege[origIdx];
+    if (!e) return;
+    if (!confirm(`Eintrag „${e.artikel || '?'}" (${e.datum || ''}) wirklich löschen?`)) return;
+    zeigeStatus('Löschen…', 'info');
+    try {
+      alleEintraege.splice(origIdx, 1);
+      await speichereAlleEintraege(`Preishistorie: Eintrag gelöscht – ${e.artikel}`);
+      zeigeStatus('✓ Eintrag gelöscht.', 'ok');
+      filtereUndRendere();
+      setTimeout(() => { $('statusMsg').className = 'status-msg'; }, 3000);
+    } catch (err) {
+      alleEintraege.splice(origIdx, 0, e); // rollback
+      zeigeStatus('Fehler: ' + err.message, 'err');
+    }
+  }
+
+  // ── Edit / modal ──
+  let aktuellerEditIdx = null;
+
+  function bearbeiteEintrag(origIdx) {
+    const e = alleEintraege[origIdx];
+    if (!e) return;
+    aktuellerEditIdx = origIdx;
+    const isSL = e.typ === 'SL';
+
+    $('editDatum').value    = e.datum    || '';
+    $('editZeit').value     = e.zeit     || '';
+    $('editArtikel').value  = e.artikel  || '';
+    $('editLieferant').value = e.lieferant || '';
+    $('editVersand').value  = e.versand  != null ? e.versand  : '';
+    $('editAnzahl').value   = e.anzahl   != null ? e.anzahl   : 1;
+
+    if (isSL) {
+      $('editEKRow').style.display  = 'block';
+      $('editEKLabel').textContent  = 'Einkaufspreis (ohne MwSt.)';
+      $('editEK').value             = e.einkaufspreis != null ? e.einkaufspreis : '';
+      $('editSLRow').style.display  = 'block';
+      $('editSL').value             = e.sl_preis != null ? e.sl_preis : '';
+    } else {
+      $('editEKRow').style.display  = 'block';
+      $('editEKLabel').textContent  = 'Einkaufspreis (ohne MwSt.)';
+      $('editEK').value             = e.einkaufspreis != null ? e.einkaufspreis : '';
+      $('editSLRow').style.display  = 'none';
+    }
+
+    $('modalStatus').className = 'status-msg';
+    $('editModal').classList.add('open');
+  }
+
+  function schliesseModal() {
+    $('editModal').classList.remove('open');
+    aktuellerEditIdx = null;
+  }
+
+  async function speichereBearbeitung() {
+    if (aktuellerEditIdx === null) return;
+    const e      = alleEintraege[aktuellerEditIdx];
+    const isSL   = e.typ === 'SL';
+    const backup = { ...e };
+
+    e.datum      = $('editDatum').value.trim()    || e.datum;
+    e.zeit       = $('editZeit').value.trim()     || e.zeit;
+    e.artikel    = $('editArtikel').value.trim()  || e.artikel;
+    e.lieferant  = $('editLieferant').value.trim();
+    e.versand    = parseFloat($('editVersand').value) || 0;
+    e.anzahl     = parseInt($('editAnzahl').value)    || 1;
+    e.einkaufspreis = parseFloat($('editEK').value)   || null;
+    if (isSL) e.sl_preis = parseFloat($('editSL').value) || e.sl_preis;
+
+    // Recalculate derived fields
+    const vkGesamt = isSL
+      ? (e.sl_preis || 0) + e.versand
+      : e.gesamtpreis; // keep existing for Importware (complex recalc not in scope)
+    if (isSL) {
+      e.gesamtpreis  = vkGesamt;
+      e.einzelpreis  = e.anzahl > 0 ? vkGesamt / e.anzahl : vkGesamt;
+      e.marge_prozent = (e.einkaufspreis != null && vkGesamt > 0)
+        ? (vkGesamt - e.einkaufspreis) / vkGesamt * 100 : null;
+    }
+
+    $('modalStatus').textContent  = 'Speichern…';
+    $('modalStatus').className    = 'status-msg info';
+
+    try {
+      await speichereAlleEintraege(`Preishistorie: ${e.artikel} bearbeitet`);
+      schliesseModal();
+      zeigeStatus('✓ Eintrag gespeichert.', 'ok');
+      filtereUndRendere();
+      setTimeout(() => { $('statusMsg').className = 'status-msg'; }, 3000);
+    } catch (err) {
+      Object.assign(alleEintraege[aktuellerEditIdx], backup); // rollback
+      $('modalStatus').textContent = 'Fehler: ' + err.message;
+      $('modalStatus').className   = 'status-msg err';
+    }
+  }
+
+  // Close modal on backdrop click
+  $('editModal').addEventListener('click', e => { if (e.target === $('editModal')) schliesseModal(); });
 
   // ── Reset ──
   function resetFilter() {
