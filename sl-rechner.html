@@ -301,17 +301,20 @@
 
       const gesamt      = sl + versand;
       const einzelpreis = gesamt / anzahl;
+      const ek          = parseFloat($('ekPreis').value) || null;
+      const marge       = (ek != null && gesamt > 0) ? ((gesamt - ek) / gesamt * 100) : null;
 
       letzteBerechnung = {
-        typ:          'SL',
-        artikel:      $('artikelName').value.trim() || '(ohne Name)',
-        lieferant:    $('lieferant').value.trim() || '',
-        einkaufspreis: parseFloat($('ekPreis').value) || null,
-        sl_preis:     sl,
+        typ:           'SL',
+        artikel:       $('artikelName').value.trim() || '(ohne Name)',
+        lieferant:     $('lieferant').value.trim() || '',
+        einkaufspreis: ek,
+        sl_preis:      sl,
         versand,
         anzahl,
-        gesamtpreis:  gesamt,
-        einzelpreis
+        gesamtpreis:   gesamt,
+        einzelpreis,
+        marge_prozent: marge
       };
 
       el.innerHTML = `
@@ -320,7 +323,7 @@
           <span class="val">${fmt(sl)}</span>
         </div>
         <div class="result-row">
-          <span>+ Versandkosten<small class="sub">(+${fmt(versand)})</small></span>
+          <span>+ Versandkosten (inkl. MwSt.)<small class="sub">(+${fmt(versand)})</small></span>
           <span class="val">${fmt(gesamt)}</span>
         </div>
         <div class="result-total">
@@ -331,6 +334,11 @@
         <div class="result-unit">
           <span class="lbl">Einzelpreis (÷ ${anzahl} Stk.)</span>
           <span class="val">${fmt(einzelpreis)}</span>
+        </div>` : ''}
+        ${marge !== null ? `
+        <div class="result-unit" style="border-color:#2e7d3233;margin-top:6px;">
+          <span class="lbl">Handelsmarge</span>
+          <span class="val" style="color:#2e7d32;">${marge.toFixed(1)}%</span>
         </div>` : ''}
       `;
       $('saveBtn').disabled = false;
