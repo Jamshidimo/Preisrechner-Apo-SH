@@ -324,7 +324,7 @@
 
       <div class="field">
         <label for="lieferant">Lieferant</label>
-        <input type="text" id="lieferant" placeholder="z.B. Zur Rose, Galexis…" oninput="berechnen()" />
+        <input type="text" id="lieferant" placeholder="Heinze, Klinik Arlesheim, Christoffel Apotheke, Weleda, Weita…" oninput="berechnen()" />
       </div>
 
       <div class="field">
@@ -337,9 +337,10 @@
 
       <div class="field">
         <label for="anzahl">Anzahl Artikel</label>
-        <div class="input-wrap">
-          <input type="number" id="anzahl" class="has-suf" min="1" step="1" placeholder="1" value="1" oninput="berechnen()" />
-          <span class="suf">Stk.</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button onclick="aendereAnzahl(-1)" style="width:36px;height:38px;border:1.5px solid #d0d9e4;border-radius:7px;background:#f8fafc;font-size:1.2rem;cursor:pointer;font-weight:700;color:#344054;flex-shrink:0;" type="button">−</button>
+          <input type="number" id="anzahl" min="1" step="1" value="1" oninput="berechnen()" style="text-align:center;border:1.5px solid #d0d9e4;border-radius:7px;padding:9px 6px;font-size:0.95rem;color:#1a2740;background:#f8fafc;outline:none;width:100%;-moz-appearance:textfield;" />
+          <button onclick="aendereAnzahl(1)"  style="width:36px;height:38px;border:1.5px solid #d0d9e4;border-radius:7px;background:#f8fafc;font-size:1.2rem;cursor:pointer;font-weight:700;color:#344054;flex-shrink:0;" type="button">+</button>
         </div>
       </div>
 
@@ -446,6 +447,12 @@
 // ──────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const fmt = v => (v != null && !isNaN(v)) ? 'CHF\u00a0' + Number(v).toFixed(2) : '–';
+
+function aendereAnzahl(delta) {
+  const inp = $('anzahl');
+  inp.value = Math.max(1, (parseInt(inp.value) || 1) + delta);
+  berechnen();
+}
 
 function aktualisiereMargeAnzeige() {
   const f = parseFloat($('faktor').value);
