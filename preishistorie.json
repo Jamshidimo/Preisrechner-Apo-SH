@@ -25,17 +25,6 @@
     "zeit": "22:22"
   },
   {
-    "typ": "SL",
-    "artikel": "test",
-    "sl_preis": 3,
-    "versand": 2.7,
-    "anzahl": 14,
-    "gesamtpreis": 5.7,
-    "einzelpreis": 0.40714285714285714,
-    "datum": "30.3.2026",
-    "zeit": "22:24"
-  },
-  {
     "typ": "Importware",
     "artikel": "hjkl",
     "einkaufspreis": 55,
@@ -48,6 +37,17 @@
     "einzelpreis": 97.828,
     "datum": "30.3.2026",
     "zeit": "22:45"
+  },
+  {
+    "typ": "SL",
+    "artikel": "fghjklÃÂÃÂÃÂÃÂ¶",
+    "sl_preis": 25.5,
+    "versand": 2.7,
+    "anzahl": 11,
+    "gesamtpreis": 28.2,
+    "einzelpreis": 2.5636363636363635,
+    "datum": "30.3.2026",
+    "zeit": "22:47"
   },
   {
     "typ": "SL",
