@@ -242,7 +242,7 @@
       </div>
       <div class="filter-field">
         <label for="filterLieferant">Lieferant</label>
-        <input type="text" id="filterLieferant" placeholder="z.B. Zur Rose…" oninput="filtereUndRendere()" />
+        <input type="text" id="filterLieferant" placeholder="" oninput="filtereUndRendere()" />
       </div>
       <div class="filter-field">
         <label for="filterTyp">Typ</label>
@@ -496,10 +496,11 @@
         ? (e.sl_preis != null ? fmt(e.sl_preis) : '–')
         : (e.einkaufspreis != null ? fmt(e.einkaufspreis) : '–');
 
-      const faktorInfo = isSL ? '–' :
-        (e.faktor ? `${Number(e.faktor).toFixed(2)}` +
-          (e.marge_prozent ? ` <small style="color:#8a99ad;">(${Number(e.marge_prozent).toFixed(1)}%)</small>` : '')
-        : '–');
+      const faktorInfo = isSL
+        ? (e.marge_prozent != null ? `<small style="color:#2e7d32;font-weight:600;">${Number(e.marge_prozent).toFixed(1)}% Marge</small>` : '–')
+        : (e.faktor ? `${Number(e.faktor).toFixed(2)}` +
+            (e.marge_prozent != null ? ` <small style="color:#8a99ad;">(${Number(e.marge_prozent).toFixed(1)}%)</small>` : '')
+          : '–');
 
       return `<tr>
         <td>${e.datum || ''}${e.zeit ? ' ' + e.zeit : ''}</td>
