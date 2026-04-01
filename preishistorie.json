@@ -51,7 +51,7 @@
   },
   {
     "typ": "SL",
-    "artikel": "fghjklÃÂ¶",
+    "artikel": "fghjklÃÂÃÂ¶",
     "sl_preis": 25.5,
     "versand": 2.7,
     "anzahl": 11,
@@ -59,20 +59,6 @@
     "einzelpreis": 2.5636363636363635,
     "datum": "30.3.2026",
     "zeit": "22:47"
-  },
-  {
-    "typ": "Importware",
-    "artikel": "knknnnn",
-    "einkaufspreis": 88,
-    "faktor": 1.6,
-    "marge_prozent": 37.50000000000001,
-    "mwst_prozent": 8.1,
-    "versand": 2.7,
-    "anzahl": 15,
-    "gesamtpreis": 154.9048,
-    "einzelpreis": 10.326986666666667,
-    "datum": "30.3.2026",
-    "zeit": "22:48"
   },
   {
     "typ": "SL",
