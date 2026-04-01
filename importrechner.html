@@ -323,6 +323,11 @@
       </div>
 
       <div class="field">
+        <label for="lieferant">Lieferant</label>
+        <input type="text" id="lieferant" placeholder="z.B. Zur Rose, Galexis…" oninput="berechnen()" />
+      </div>
+
+      <div class="field">
         <label for="nettoPreis">Einkaufspreis (ohne MwSt.)</label>
         <div class="input-wrap">
           <span class="pre">CHF</span>
@@ -393,7 +398,7 @@
       </div>
 
       <div class="field">
-        <label for="versandKosten">Versandkosten</label>
+        <label for="versandKosten">Versandkosten (inkl. MwSt.)</label>
         <div class="input-wrap">
           <span class="pre">CHF</span>
           <input type="number" id="versandKosten" class="has-pre" min="0" step="0.1" value="2.70" oninput="berechnen()" />
@@ -481,7 +486,8 @@ function berechnen() {
 
   letzteBerechnung = {
     typ: 'Importware',
-    artikel: $('artikelName').value.trim() || '(ohne Name)',
+    artikel:   $('artikelName').value.trim() || '(ohne Name)',
+    lieferant: $('lieferant').value.trim() || '',
     einkaufspreis: netto,
     faktor, marge_prozent: marge,
     mwst_prozent: mwstPct, versand,
@@ -674,6 +680,7 @@ function renderHistorie(eintraege) {
     return `<tr>
       <td>${e.datum || ''}${e.zeit ? ' ' + e.zeit : ''}</td>
       <td>${e.artikel || '–'}</td>
+      <td>${e.lieferant || '–'}</td>
       <td class="td-val">${ekZell}</td>
       <td>${e.faktor != null ? Number(e.faktor).toFixed(2) : '–'}</td>
       <td>${e.marge_prozent != null ? Number(e.marge_prozent).toFixed(1) + '%' : '–'}</td>
@@ -691,6 +698,7 @@ function renderHistorie(eintraege) {
         <tr>
           <th>Datum / Zeit</th>
           <th>Artikel</th>
+          <th>Lieferant</th>
           <th>EK (netto)</th>
           <th>Faktor</th>
           <th>Marge</th>
