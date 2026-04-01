@@ -14,20 +14,6 @@
     "zeit": "22:22"
   },
   {
-    "typ": "Importware",
-    "artikel": "hjkl",
-    "einkaufspreis": 55,
-    "faktor": 1.6,
-    "marge_prozent": 37.50000000000001,
-    "mwst_prozent": 8.1,
-    "versand": 2.7,
-    "anzahl": 1,
-    "gesamtpreis": 97.828,
-    "einzelpreis": 97.828,
-    "datum": "30.3.2026",
-    "zeit": "22:45"
-  },
-  {
     "typ": "SL",
     "artikel": "Quilonum ret. 450mg 100 Stk",
     "lieferant": "Heinze",
