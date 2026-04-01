@@ -1,16 +1,5 @@
 [
   {
-    "typ": "SL",
-    "artikel": "Testartikel SL",
-    "sl_preis": 45.25,
-    "versand": 2.7,
-    "anzahl": 2,
-    "gesamtpreis": 47.95,
-    "einzelpreis": 23.975,
-    "datum": "30.3.2026",
-    "zeit": "22:21"
-  },
-  {
     "typ": "Importware",
     "artikel": "Testware NLP",
     "einkaufspreis": 25.3,
