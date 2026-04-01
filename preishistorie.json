@@ -51,7 +51,7 @@
   },
   {
     "typ": "SL",
-    "artikel": "fghjklÃ¶",
+    "artikel": "fghjklÃÂ¶",
     "sl_preis": 25.5,
     "versand": 2.7,
     "anzahl": 11,
@@ -73,5 +73,18 @@
     "einzelpreis": 10.326986666666667,
     "datum": "30.3.2026",
     "zeit": "22:48"
+  },
+  {
+    "typ": "SL",
+    "artikel": "Quilonum ret. 450mg 100 Stk",
+    "lieferant": "Heinze",
+    "einkaufspreis": 36.81,
+    "sl_preis": 56.45,
+    "versand": 2.7,
+    "anzahl": 2,
+    "gesamtpreis": 59.150000000000006,
+    "einzelpreis": 29.575000000000003,
+    "datum": "1.4.2026",
+    "zeit": "19:17"
   }
 ]
