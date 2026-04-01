@@ -605,8 +605,8 @@ async function speichereHistorieDatei(eintraege, sha) {
 // ──────────────────────────────────────────────
 // Save with SHA-conflict retry
 // ──────────────────────────────────────────────
-async function speichernMitRetry(eintrag, versuche = 2) {
-  for (let i = 0; i < versuche; i++) {
+async function speichernMitRetry(eintrag) {
+  for (let versuch = 0; versuch < 3; versuch++) {
     const { eintraege, sha } = await holeHistorieDatei();
     eintraege.push(eintrag);
     try {
@@ -614,8 +614,9 @@ async function speichernMitRetry(eintrag, versuche = 2) {
       renderHistorie(eintraege);
       return;
     } catch (e) {
-      if (i < versuche - 1 && e.message && e.message.includes('does not match')) {
-        continue; // SHA conflict – re-fetch and retry
+      if (versuch < 2 && e.message && e.message.includes('does not match')) {
+        await new Promise(r => setTimeout(r, 600 * (versuch + 1)));
+        continue;
       }
       throw e;
     }

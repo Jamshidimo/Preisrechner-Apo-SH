@@ -606,28 +606,32 @@
     const repo   = gh.ownerRepo || 'Jamshidimo/Preisrechner-Apo-SH';
     const branch = gh.branch    || 'main';
     const file   = gh.file      || 'preishistorie.json';
+    const url    = `https://api.github.com/repos/${repo}/contents/${file}`;
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(alleEintraege, null, 2))));
 
-    // Fetch fresh SHA (retry once on conflict)
-    for (let i = 0; i < 2; i++) {
-      const getResp = await fetch(
-        `https://api.github.com/repos/${repo}/contents/${file}?ref=${branch}`,
-        { headers: ghHeaders(gh.token) }
-      );
+    for (let versuch = 0; versuch < 3; versuch++) {
+      // Always fetch a fresh SHA before each attempt
+      const getResp = await fetch(`${url}?ref=${branch}`, { headers: ghHeaders(gh.token) });
       const sha = getResp.ok ? (await getResp.json()).sha : null;
 
-      const putResp = await fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
+      const putResp = await fetch(url, {
         method: 'PUT',
         headers: ghHeaders(gh.token),
         body: JSON.stringify({
           message: commitMsg || 'Preishistorie aktualisiert',
-          content: btoa(unescape(encodeURIComponent(JSON.stringify(alleEintraege, null, 2)))),
+          content,
           branch,
           ...(sha ? { sha } : {})
         })
       });
+
       if (putResp.ok) return;
+
       const err = await putResp.json().catch(() => ({}));
-      if (i === 0 && err.message && err.message.includes('does not match')) continue;
+      if (versuch < 2 && err.message && err.message.includes('does not match')) {
+        await new Promise(r => setTimeout(r, 600 * (versuch + 1))); // 600ms, 1200ms
+        continue;
+      }
       throw new Error(err.message || `GitHub API: ${putResp.status}`);
     }
   }
