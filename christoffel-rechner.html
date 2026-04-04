@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SL-Rechner – Apotheke</title>
+  <title>Christoffelapotheke-Rechner – Apotheke</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -34,7 +34,7 @@
       transition: border-color 0.15s, color 0.15s;
     }
     .topbar a.back { color: #6b7c95; }
-    .topbar a.back:hover { border-color: #198754; color: #198754; }
+    .topbar a.back:hover { border-color: #7b1fa2; color: #7b1fa2; }
     .topbar a.hist { color: #e65100; border-color: #ffcc80; background: #fff3e0; }
     .topbar a.hist:hover { border-color: #e65100; }
 
@@ -64,27 +64,19 @@
     }
     .card-title::after { content: ''; flex: 1; height: 1px; background: #e8eef4; }
 
-    .loa-btn {
+    .lieferant-banner {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 12px;
-      background: #e8f5e9;
-      border: 2px solid #a5d6a7;
+      background: #f3e5f5;
+      border: 2px solid #ce93d8;
       border-radius: 10px;
-      padding: 18px 20px;
-      text-decoration: none;
-      color: #1b5e20;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
-      margin-bottom: 4px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
     }
-    .loa-btn:hover { background: #c8e6c9; border-color: #66bb6a; transform: translateY(-1px); }
-    .loa-btn-left { display: flex; align-items: center; gap: 14px; }
-    .loa-btn-icon { font-size: 1.8rem; flex-shrink: 0; }
-    .loa-btn-text strong { display: block; font-size: 1rem; font-weight: 700; }
-    .loa-btn-text span  { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; display: block; }
-    .loa-btn-arrow { font-size: 1.3rem; opacity: 0.6; }
-    .loa-hint { font-size: 0.75rem; color: #8a99ad; margin-top: 6px; margin-bottom: 20px; }
+    .lieferant-banner .icon { font-size: 1.6rem; flex-shrink: 0; }
+    .lieferant-banner .text strong { display: block; font-size: 1rem; font-weight: 800; color: #4a148c; }
+    .lieferant-banner .text span   { font-size: 0.8rem; color: #7b1fa2; margin-top: 2px; display: block; }
 
     .divider { border: none; border-top: 1.5px solid #eef2f7; margin: 20px 0; }
 
@@ -108,7 +100,7 @@
     }
     input[type="number"].has-pre { padding-left: 48px; }
     input[type="number"].has-suf { padding-right: 42px; }
-    input[type="number"]:focus, input[type="text"]:focus { border-color: #198754; background: #fff; }
+    input[type="number"]:focus, input[type="text"]:focus { border-color: #7b1fa2; background: #fff; }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
     input[type="number"] { -moz-appearance: textfield; }
@@ -118,7 +110,7 @@
       border: 1.5px solid #d0d9e4; border-radius: 7px;
       font-size: 0.85rem; color: #1a2740; outline: none; background: #f8fafc;
     }
-    input[type="password"]:focus { border-color: #198754; background: #fff; }
+    input[type="password"]:focus { border-color: #7b1fa2; background: #fff; }
     .pw-wrap { position: relative; }
     .pw-wrap input { padding-right: 48px; }
     .toggle-pw {
@@ -126,33 +118,69 @@
       background: none; border: none; cursor: pointer; color: #8a99ad; font-size: 0.75rem;
     }
 
+    /* Rabatt row */
+    .rabatt-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 14px;
+    }
+    .rabatt-row .field { flex: 1; margin-bottom: 0; }
+    .rabatt-badge {
+      flex-shrink: 0;
+      background: #f3e5f5;
+      color: #7b1fa2;
+      border: 1.5px solid #ce93d8;
+      border-radius: 7px;
+      padding: 9px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      min-width: 90px;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .rabatt-badge span { display: block; font-size: 0.68rem; font-weight: 500; color: #ab47bc; }
+
+    /* Results */
     .results {
-      background: #f0f9f4; border: 1.5px solid #a5d6a7;
-      border-radius: 10px; padding: 16px 18px; margin-top: 18px;
+      background: #fce4ec;
+      border: 1.5px solid #f48fb1;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-top: 18px;
     }
     .result-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 0; font-size: 0.875rem; color: #2d4a35;
-      border-bottom: 1px solid #c8e6c9;
+      padding: 6px 0; font-size: 0.875rem; color: #4a0020;
+      border-bottom: 1px solid #f8bbd0;
     }
     .result-row:last-child { border-bottom: none; }
     .result-row .val { font-weight: 600; font-variant-numeric: tabular-nums; }
     .result-row .sub { font-size: 0.75rem; color: #8a99ad; margin-left: 5px; }
 
     .result-total {
-      margin-top: 10px; padding-top: 12px; border-top: 2px solid #198754;
+      margin-top: 10px; padding-top: 12px; border-top: 2px solid #7b1fa2;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .result-total .lbl { font-weight: 700; font-size: 1rem; color: #198754; }
-    .result-total .val { font-size: 1.2rem; font-weight: 800; color: #198754; font-variant-numeric: tabular-nums; }
+    .result-total .lbl { font-weight: 700; font-size: 1rem; color: #7b1fa2; }
+    .result-total .val { font-size: 1.2rem; font-weight: 800; color: #7b1fa2; font-variant-numeric: tabular-nums; }
 
     .result-unit {
-      background: #fff; border: 1.5px solid #19875433; border-radius: 8px;
+      background: #fff; border: 1.5px solid #7b1fa233; border-radius: 8px;
       padding: 9px 12px; margin-top: 10px;
       display: flex; justify-content: space-between; align-items: center;
     }
     .result-unit .lbl { font-weight: 600; font-size: 0.9rem; color: #344054; }
-    .result-unit .val { font-size: 1.1rem; font-weight: 700; color: #198754; font-variant-numeric: tabular-nums; }
+    .result-unit .val { font-size: 1.1rem; font-weight: 700; color: #7b1fa2; font-variant-numeric: tabular-nums; }
+
+    .result-marge {
+      background: #f3e5f5; border: 1.5px solid #ce93d8; border-radius: 8px;
+      padding: 9px 12px; margin-top: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .result-marge .lbl { font-weight: 600; font-size: 0.9rem; color: #4a148c; }
+    .result-marge .val { font-size: 1.05rem; font-weight: 700; color: #4a148c; }
 
     .empty-hint { text-align: center; color: #b0bec5; font-size: 0.875rem; padding: 10px 0; }
 
@@ -162,9 +190,9 @@
       transition: background 0.15s, transform 0.1s; margin-top: 12px;
     }
     .btn:active { transform: scale(0.98); }
-    .btn-green { background: #198754; color: #fff; }
-    .btn-green:hover { background: #157347; }
-    .btn-green:disabled { background: #8bc4a8; cursor: not-allowed; }
+    .btn-purple { background: #7b1fa2; color: #fff; }
+    .btn-purple:hover { background: #6a1b9a; }
+    .btn-purple:disabled { background: #ce93d8; cursor: not-allowed; }
 
     .status-msg {
       font-size: 0.8rem; padding: 8px 12px; border-radius: 7px;
@@ -185,52 +213,46 @@
   </div>
 
   <div class="page-title">
-    <h1>SL-Rechner</h1>
-    <p>Spezialitätenliste – Versandkosten auf Einzelprodukt aufteilen</p>
+    <h1>Christoffelapotheke-Rechner</h1>
+    <p>Verkaufspreis aus Einkaufspreis mit Rabatt ermitteln</p>
   </div>
 
   <div class="card">
-    <div class="card-title">Schritt 1 – Preis berechnen</div>
+    <div class="lieferant-banner">
+      <div class="icon">🏪</div>
+      <div class="text">
+        <strong>Christoffelapotheke</strong>
+        <span>Lieferant ist immer vorausgefüllt</span>
+      </div>
+    </div>
 
-    <a class="loa-btn" href="https://www.spezialitaetenliste.ch/LOACalculator.aspx" target="_blank" rel="noopener">
-      <div class="loa-btn-left">
-        <div class="loa-btn-icon">🔗</div>
-        <div class="loa-btn-text">
-          <strong>BAG SL-Rechner öffnen</strong>
-          <span>spezialitaetenliste.ch/LOACalculator</span>
+    <div class="card-title">Berechnung</div>
+
+    <div class="field">
+      <label for="artikelName">Artikelname</label>
+      <input type="text" id="artikelName" placeholder="z.B. Weleda Calendula Creme" oninput="berechnen()" />
+    </div>
+
+    <div class="field">
+      <label for="nettoPreis">Einkaufspreis (ohne MwSt.)</label>
+      <div class="input-wrap">
+        <span class="pre">CHF</span>
+        <input type="number" id="nettoPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+      </div>
+    </div>
+
+    <!-- Rabatt -->
+    <div class="rabatt-row">
+      <div class="field">
+        <label for="rabatt">Rabatt</label>
+        <div class="input-wrap">
+          <input type="number" id="rabatt" class="has-suf" min="0" max="99" step="0.5" value="20" oninput="berechnen()" />
+          <span class="suf">%</span>
         </div>
       </div>
-      <div class="loa-btn-arrow">↗</div>
-    </a>
-    <p class="loa-hint">Preis im BAG SL-Rechner berechnen, dann unten eintragen.</p>
-
-    <hr class="divider" />
-
-    <div class="card-title">Schritt 2 – Versand aufteilen</div>
-
-    <div class="field">
-      <label for="artikelName">Artikelname <span style="font-weight:400;color:#8a99ad;">(optional)</span></label>
-      <input type="text" id="artikelName" placeholder="z.B. Voltaren Emulgel 100g" oninput="berechnen()" />
-    </div>
-
-    <div class="field">
-      <label for="lieferant">Lieferant</label>
-      <input type="text" id="lieferant" placeholder="Heinze, Klinik Arlesheim, Weleda, Weita…" oninput="berechnen()" />
-    </div>
-
-    <div class="field">
-      <label for="ekPreis">Einkaufspreis (ohne MwSt.)</label>
-      <div class="input-wrap">
-        <span class="pre">CHF</span>
-        <input type="number" id="ekPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="slPreis">Preis aus BAG SL-Rechner (CHF)</label>
-      <div class="input-wrap">
-        <span class="pre">CHF</span>
-        <input type="number" id="slPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+      <div class="rabatt-badge" id="rabattBadge">
+        × 1.250
+        <span>Faktor</span>
       </div>
     </div>
 
@@ -238,7 +260,7 @@
       <label for="versand">Versandkosten (inkl. MwSt.)</label>
       <div class="input-wrap">
         <span class="pre">CHF</span>
-        <input type="number" id="versand" class="has-pre" min="0" step="0.1" value="2.70" oninput="berechnen()" />
+        <input type="number" id="versand" class="has-pre" min="0" step="0.10" value="2.70" oninput="berechnen()" />
       </div>
     </div>
 
@@ -252,7 +274,7 @@
     </div>
 
     <div class="results" id="results">
-      <p class="empty-hint">SL-Preis eingeben…</p>
+      <p class="empty-hint">Einkaufspreis eingeben…</p>
     </div>
 
     <hr class="divider" />
@@ -264,10 +286,10 @@
         <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" oninput="speichereGHConfig()" />
         <button class="toggle-pw" onclick="toggleToken()">👁</button>
       </div>
-      <p class="gh-note">Wird geteilt mit dem Importware-Rechner – einmal eingeben, überall verfügbar.</p>
+      <p class="gh-note">Wird geteilt mit den anderen Rechnern – einmal eingeben, überall verfügbar.</p>
     </div>
 
-    <button class="btn btn-green" id="saveBtn" onclick="speichern()" disabled>
+    <button class="btn btn-purple" id="saveBtn" onclick="speichern()" disabled>
       💾 &nbsp;Auf GitHub speichern
     </button>
     <div class="status-msg" id="statusMsg"></div>
@@ -286,48 +308,56 @@
 
     // ── Berechnung ──
     function berechnen() {
-      const slStr  = $('slPreis').value;
-      const sl     = parseFloat(slStr);
+      const ekStr  = $('nettoPreis').value;
+      const ek     = parseFloat(ekStr);
+      const rabatt = parseFloat($('rabatt').value) || 0;
       const versand = parseFloat($('versand').value) || 0;
       const anzahl  = Math.max(1, parseInt($('anzahl').value) || 1);
       const el      = $('results');
 
-      if (!slStr || isNaN(sl) || sl < 0) {
-        el.innerHTML = '<p class="empty-hint">SL-Preis eingeben…</p>';
+      // Update Faktor badge
+      const faktor = rabatt < 100 ? 1 / (1 - rabatt / 100) : 0;
+      $('rabattBadge').innerHTML = `× ${faktor.toFixed(3)}<span>Faktor</span>`;
+
+      if (!ekStr || isNaN(ek) || ek < 0) {
+        el.innerHTML = '<p class="empty-hint">Einkaufspreis eingeben…</p>';
         $('saveBtn').disabled = true;
         letzteBerechnung = null;
         return;
       }
 
-      const gesamt      = sl + versand;
-      const einzelpreis = gesamt / anzahl;
-      const ek          = parseFloat($('ekPreis').value) || null;
-      const marge       = (ek != null && gesamt > 0) ? ((gesamt - ek) / gesamt * 100) : null;
+      // VK = EK / (1 - Rabatt/100)  →  for 20%: EK / 80 * 100
+      const vk           = ek * faktor;
+      const marge        = rabatt; // Marge = Rabatt% by definition
+      const gesamt       = vk + versand;
+      const einzelpreis  = gesamt / anzahl;
 
       letzteBerechnung = {
-        typ:           'SL',
-        artikel:       $('artikelName').value.trim() || '(ohne Name)',
-        lieferant:     $('lieferant').value.trim() || '',
+        typ:          'Christoffelapotheke',
+        artikel:      $('artikelName').value.trim() || '(ohne Name)',
+        lieferant:    'Christoffelapotheke',
         einkaufspreis: ek,
-        sl_preis:      sl,
+        rabatt_prozent: rabatt,
+        faktor,
+        verkaufspreis: vk,
+        marge_prozent: marge,
         versand,
         anzahl,
-        gesamtpreis:   gesamt,
-        einzelpreis,
-        marge_prozent: marge
+        gesamtpreis:  gesamt,
+        einzelpreis
       };
 
       el.innerHTML = `
         <div class="result-row">
-          <span>SL-Preis (aus BAG SL-Rechner)</span>
-          <span class="val">${fmt(sl)}</span>
+          <span>EK ÷ ${100 - rabatt}% × 100<small class="sub">(Rabatt ${rabatt}%)</small></span>
+          <span class="val">${fmt(vk)}</span>
         </div>
         <div class="result-row">
           <span>+ Versandkosten (inkl. MwSt.)<small class="sub">(+${fmt(versand)})</small></span>
           <span class="val">${fmt(gesamt)}</span>
         </div>
         <div class="result-total">
-          <span class="lbl">Gesamtpreis</span>
+          <span class="lbl">Verkaufspreis gesamt</span>
           <span class="val">${fmt(gesamt)}</span>
         </div>
         ${anzahl > 1 ? `
@@ -335,11 +365,10 @@
           <span class="lbl">Einzelpreis (÷ ${anzahl} Stk.)</span>
           <span class="val">${fmt(einzelpreis)}</span>
         </div>` : ''}
-        ${marge !== null ? `
-        <div class="result-unit" style="border-color:#2e7d3233;margin-top:6px;">
+        <div class="result-marge">
           <span class="lbl">Handelsmarge</span>
-          <span class="val" style="color:#2e7d32;">${marge.toFixed(1)}%</span>
-        </div>` : ''}
+          <span class="val">${marge.toFixed(1)}%</span>
+        </div>
       `;
       $('saveBtn').disabled = false;
     }
@@ -347,10 +376,7 @@
     // ── Shared GitHub config ──
     function speichereGHConfig() {
       const bestehend = JSON.parse(localStorage.getItem('apoGH') || '{}');
-      localStorage.setItem('apoGH', JSON.stringify({
-        ...bestehend,
-        token: $('ghToken').value
-      }));
+      localStorage.setItem('apoGH', JSON.stringify({ ...bestehend, token: $('ghToken').value }));
     }
     function toggleToken() {
       const inp = $('ghToken');
@@ -371,55 +397,43 @@
       };
     }
 
-    async function holeHistorieDatei(gh) {
-      const url = `https://api.github.com/repos/${gh.ownerRepo || 'Jamshidimo/Preisrechner-Apo-SH'}/contents/${gh.file || 'preishistorie.json'}?ref=${gh.branch || 'main'}`;
-      const resp = await fetch(url, { headers: ghHeaders(gh.token) });
-      if (resp.status === 404) return { eintraege: [], sha: null };
-      if (!resp.ok) throw new Error(`GitHub API: ${resp.status} ${resp.statusText}`);
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
-      return { eintraege: Array.isArray(content) ? content : [], sha: data.sha };
-    }
-
-    async function speichereHistorieDatei(gh, eintraege, sha) {
+    async function speichernMitRetry(gh, eintrag) {
       const repo   = gh.ownerRepo || 'Jamshidimo/Preisrechner-Apo-SH';
       const branch = gh.branch    || 'main';
       const file   = gh.file      || 'preishistorie.json';
-      const letzter = eintraege[eintraege.length - 1];
-      const body = {
-        message: `Preishistorie: ${letzter.artikel} (${letzter.datum})`,
-        content: btoa(unescape(encodeURIComponent(JSON.stringify(eintraege, null, 2)))),
-        branch
-      };
-      if (sha) body.sha = sha;
-      const resp = await fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
-        method: 'PUT', headers: ghHeaders(gh.token), body: JSON.stringify(body)
-      });
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.message || `GitHub API: ${resp.status}`);
-      }
-    }
+      const url    = `https://api.github.com/repos/${repo}/contents/${file}`;
 
-    // ── Save with SHA-conflict retry ──
-    async function speichernMitRetry(gh, eintrag) {
       for (let versuch = 0; versuch < 3; versuch++) {
-        const { eintraege, sha } = await holeHistorieDatei(gh);
-        eintraege.push(eintrag);
-        try {
-          await speichereHistorieDatei(gh, eintraege, sha);
-          return;
-        } catch (e) {
-          if (versuch < 2 && e.message && e.message.includes('does not match')) {
-            await new Promise(r => setTimeout(r, 600 * (versuch + 1)));
-            continue;
-          }
-          throw e;
+        const getResp = await fetch(`${url}?ref=${branch}`, { headers: ghHeaders(gh.token) });
+        let eintraege = [], sha = null;
+        if (getResp.ok) {
+          const data = await getResp.json();
+          sha = data.sha;
+          eintraege = JSON.parse(atob(data.content.replace(/\n/g, '')));
+          if (!Array.isArray(eintraege)) eintraege = [];
         }
+        eintraege.push(eintrag);
+
+        const putResp = await fetch(url, {
+          method: 'PUT',
+          headers: ghHeaders(gh.token),
+          body: JSON.stringify({
+            message: `Preishistorie: ${eintrag.artikel} (Christoffelapotheke)`,
+            content: btoa(unescape(encodeURIComponent(JSON.stringify(eintraege, null, 2)))),
+            branch,
+            ...(sha ? { sha } : {})
+          })
+        });
+        if (putResp.ok) return;
+        const err = await putResp.json().catch(() => ({}));
+        if (versuch < 2 && err.message && err.message.includes('does not match')) {
+          await new Promise(r => setTimeout(r, 600 * (versuch + 1)));
+          continue;
+        }
+        throw new Error(err.message || `GitHub API: ${putResp.status}`);
       }
     }
 
-    // ── Speichern ──
     async function speichern() {
       if (!letzteBerechnung) return;
       const gh = ladeConfig();
@@ -452,6 +466,7 @@
     }
 
     ladeConfig();
+    berechnen(); // show initial badge
   </script>
 </body>
 </html>

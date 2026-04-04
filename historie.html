@@ -305,6 +305,7 @@
           <option value="">Alle</option>
           <option value="Importware">Importware</option>
           <option value="SL">SL</option>
+          <option value="Christoffelapotheke">Christoffelapotheke</option>
         </select>
       </div>
       <div class="filter-field">
@@ -553,35 +554,42 @@
     $('tableSection').style.display = 'block';
 
     // Stats
-    const anzahlImport = eintraege.filter(e => (e.typ || 'Importware') === 'Importware').length;
-    const anzahlSL     = eintraege.filter(e => e.typ === 'SL').length;
+    const anzahlImport       = eintraege.filter(e => (e.typ || 'Importware') === 'Importware').length;
+    const anzahlSL           = eintraege.filter(e => e.typ === 'SL').length;
+    const anzahlChristoffel  = eintraege.filter(e => e.typ === 'Christoffelapotheke').length;
     $('statsBar').innerHTML = `
       <span class="stat-pill">${eintraege.length} Einträge</span>
-      ${anzahlImport ? `<span class="stat-pill import">📦 ${anzahlImport} Importware</span>` : ''}
-      ${anzahlSL     ? `<span class="stat-pill sl">🏥 ${anzahlSL} SL</span>` : ''}
+      ${anzahlImport      ? `<span class="stat-pill import">📦 ${anzahlImport} Importware</span>` : ''}
+      ${anzahlSL          ? `<span class="stat-pill sl">🏥 ${anzahlSL} SL</span>` : ''}
+      ${anzahlChristoffel ? `<span class="stat-pill" style="background:#f3e5f5;color:#7b1fa2;border-color:#ce93d8;">🏪 ${anzahlChristoffel} Christoffelapotheke</span>` : ''}
     `;
 
     // Rows
     const zeilen = eintraege.map(e => {
       const origIdx = alleEintraege.indexOf(e);
-      const typ     = e.typ || 'Importware';
-      const isSL    = typ === 'SL';
-      const badgeClass = isSL ? 'badge-sl' : 'badge-import';
-      const typLabel   = isSL ? '🏥 SL' : '📦 Importware';
+      const typ              = e.typ || 'Importware';
+      const isSL             = typ === 'SL';
+      const isChristoffel    = typ === 'Christoffelapotheke';
+      const badgeClass       = isSL ? 'badge-sl' : isChristoffel ? '' : 'badge-import';
+      const badgeStyle       = isChristoffel ? 'style="background:#f3e5f5;color:#7b1fa2;border:1px solid #ce93d8;border-radius:12px;padding:2px 8px;font-size:0.72rem;font-weight:700;"' : '';
+      const typLabel         = isSL ? '🏥 SL' : isChristoffel ? '🏪 Christoffel' : '📦 Importware';
 
       const ekPreis = isSL
-        ? (e.sl_preis != null ? fmt(e.sl_preis) : '–')
-        : (e.einkaufspreis != null ? fmt(e.einkaufspreis) : '–');
+        ? (e.sl_preis       != null ? fmt(e.sl_preis)       : '–')
+        : (e.einkaufspreis  != null ? fmt(e.einkaufspreis)  : '–');
 
-      const faktorInfo = isSL
-        ? (e.marge_prozent != null ? `<small style="color:#2e7d32;font-weight:600;">${Number(e.marge_prozent).toFixed(1)}% Marge</small>` : '–')
+      const faktorInfo = (isSL || isChristoffel)
+        ? (e.marge_prozent != null
+            ? `<small style="color:${isChristoffel ? '#7b1fa2' : '#2e7d32'};font-weight:600;">${Number(e.marge_prozent).toFixed(1)}% Marge</small>`
+              + (isChristoffel && e.rabatt_prozent != null ? ` <small style="color:#8a99ad;">(${Number(e.rabatt_prozent).toFixed(0)}% Rabatt)</small>` : '')
+            : '–')
         : (e.faktor ? `${Number(e.faktor).toFixed(2)}` +
             (e.marge_prozent != null ? ` <small style="color:#8a99ad;">(${Number(e.marge_prozent).toFixed(1)}%)</small>` : '')
           : '–');
 
       return `<tr>
         <td>${e.datum || ''}${e.zeit ? ' ' + e.zeit : ''}</td>
-        <td><span class="badge-typ ${badgeClass}">${typLabel}</span></td>
+        <td>${isChristoffel ? `<span ${badgeStyle}>${typLabel}</span>` : `<span class="badge-typ ${badgeClass}">${typLabel}</span>`}</td>
         <td><strong>${e.artikel || '–'}</strong></td>
         <td>${e.lieferant || '–'}</td>
         <td class="td-val">${ekPreis}</td>

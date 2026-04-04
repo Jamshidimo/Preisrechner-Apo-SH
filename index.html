@@ -18,39 +18,30 @@
       padding: 32px 16px;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .header h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #1a2740;
-    }
-    .header p {
-      font-size: 1rem;
-      color: #6b7c95;
-      margin-top: 6px;
-    }
+    .header { text-align: center; margin-bottom: 40px; }
+    .header h1 { font-size: 2rem; font-weight: 800; color: #1a2740; }
+    .header p  { font-size: 1rem; color: #6b7c95; margin-top: 6px; }
 
     .cards {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      max-width: 720px;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      max-width: 980px;
       width: 100%;
     }
-
-    @media (max-width: 560px) {
-      .cards { grid-template-columns: 1fr; }
+    @media (max-width: 720px) {
+      .cards { grid-template-columns: 1fr 1fr; }
       .header h1 { font-size: 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .cards { grid-template-columns: 1fr; }
     }
 
     .card {
       background: #fff;
       border-radius: 16px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.09);
-      padding: 32px 28px;
+      padding: 28px 24px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -58,58 +49,40 @@
       color: inherit;
       border: 2px solid transparent;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-      cursor: pointer;
     }
     .card:hover {
-      border-color: #0d6efd;
-      box-shadow: 0 8px 32px rgba(13,110,253,0.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
       transform: translateY(-3px);
     }
+    .card.blue:hover  { border-color: #0d6efd; }
+    .card.green:hover { border-color: #198754; }
+    .card.purple:hover{ border-color: #7b1fa2; }
+    .card.orange:hover{ border-color: #e65100; }
 
     .card-icon {
-      width: 52px;
-      height: 52px;
+      width: 50px; height: 50px;
       border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 16px;
     }
-    .icon-blue { background: #e8f0fe; }
-    .icon-green { background: #e8f5e9; }
 
-    .card h2 {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: #1a2740;
-      margin-bottom: 8px;
-    }
-    .card p {
-      font-size: 0.875rem;
-      color: #6b7c95;
-      line-height: 1.5;
-      flex: 1;
-    }
+    .card h2 { font-size: 1.05rem; font-weight: 800; color: #1a2740; margin-bottom: 8px; }
+    .card p  { font-size: 0.84rem; color: #6b7c95; line-height: 1.5; flex: 1; }
 
     .card-btn {
-      margin-top: 24px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: background 0.15s;
-      text-decoration: none;
+      margin-top: 20px;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: 8px;
+      font-size: 0.84rem; font-weight: 700; border: none;
+      cursor: pointer; text-decoration: none;
     }
-    .btn-blue { background: #0d6efd; color: #fff; }
-    .btn-blue:hover { background: #0b5ed7; }
-    .btn-green { background: #198754; color: #fff; }
-    .btn-green:hover { background: #157347; }
+    .btn-blue   { background: #0d6efd; color: #fff; }
+    .btn-green  { background: #198754; color: #fff; }
+    .btn-purple { background: #7b1fa2; color: #fff; }
+    .btn-orange { background: #e65100; color: #fff; }
+
+    .full-row { grid-column: 1 / -1; }
   </style>
 </head>
 <body>
@@ -122,27 +95,35 @@
   <div class="cards">
 
     <!-- Importware -->
-    <a class="card" href="importrechner.html">
-      <div class="card-icon icon-blue">📦</div>
+    <a class="card blue" href="importrechner.html">
+      <div class="card-icon" style="background:#e8f0fe;">📦</div>
       <h2>Importware-Rechner</h2>
-      <p>Für importierte Produkte ohne Spezialitätenliste. Berechnet Einkaufspreis mit Faktor, MwSt. und Versandkosten – inkl. Preishistorie auf GitHub.</p>
+      <p>Für importierte Produkte. Berechnet mit Faktor, MwSt. und Versandkosten – inkl. Preishistorie.</p>
       <span class="card-btn btn-blue">Öffnen →</span>
     </a>
 
     <!-- SL -->
-    <a class="card" href="sl-rechner.html">
-      <div class="card-icon icon-green">🏥</div>
+    <a class="card green" href="sl-rechner.html">
+      <div class="card-icon" style="background:#e8f5e9;">🏥</div>
       <h2>SL-Rechner</h2>
-      <p>Für Spezialitätenlisten-Produkte. Berechnet den Krankenkassenpreis via BAG SL-Rechner und teilt Versandkosten auf die Anzahl Artikel auf.</p>
+      <p>Für Spezialitätenlisten-Produkte via BAG SL-Rechner, inkl. Versandaufteilung auf Einzelartikel.</p>
       <span class="card-btn btn-green">Öffnen →</span>
     </a>
 
-    <!-- Historie -->
-    <a class="card" href="historie.html" style="grid-column: 1 / -1;">
+    <!-- Christoffelapotheke -->
+    <a class="card purple" href="christoffel-rechner.html">
+      <div class="card-icon" style="background:#f3e5f5;">🏪</div>
+      <h2>Christoffelapotheke</h2>
+      <p>Verkaufspreis aus Einkaufspreis mit 20% Rabatt ermitteln – Rabatt jederzeit anpassbar.</p>
+      <span class="card-btn btn-purple">Öffnen →</span>
+    </a>
+
+    <!-- Preishistorie -->
+    <a class="card orange full-row" href="historie.html">
       <div class="card-icon" style="background:#fff3e0;">📋</div>
       <h2>Preishistorie</h2>
-      <p>Alle gespeicherten Berechnungen durchsuchen und filtern – nach Datum, Artikel, Typ (Importware / SL) und mehr.</p>
-      <span class="card-btn" style="background:#e65100;color:#fff;">Öffnen →</span>
+      <p>Alle gespeicherten Berechnungen durchsuchen und filtern – nach Datum, Artikel, Typ (Importware / SL / Christoffelapotheke) und mehr.</p>
+      <span class="card-btn btn-orange">Öffnen →</span>
     </a>
 
   </div>
