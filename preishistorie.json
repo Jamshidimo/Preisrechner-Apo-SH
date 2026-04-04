@@ -26,5 +26,21 @@
     "datum": "1.4.2026",
     "zeit": "19:17",
     "marge_prozent": 37.76838546069315
+  },
+  {
+    "typ": "Christoffel Apotheke",
+    "artikel": "Nifedipin 0.2% Salbe 30g",
+    "lieferant": "Christoffel Apotheke",
+    "einkaufspreis": 42,
+    "rabatt_prozent": 20,
+    "faktor": 1.25,
+    "verkaufspreis": 52.5,
+    "marge_prozent": 20,
+    "versand": 0,
+    "anzahl": 2,
+    "gesamtpreis": 52.5,
+    "einzelpreis": 26.25,
+    "datum": "4.4.2026",
+    "zeit": "12:35"
   }
 ]
