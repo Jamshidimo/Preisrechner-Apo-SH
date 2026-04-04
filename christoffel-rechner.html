@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Christoffelapotheke-Rechner – Apotheke</title>
+  <title>Christoffel Apotheke-Rechner – Apotheke</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -213,7 +213,7 @@
   </div>
 
   <div class="page-title">
-    <h1>Christoffelapotheke-Rechner</h1>
+    <h1>Christoffel Apotheke-Rechner</h1>
     <p>Verkaufspreis aus Einkaufspreis mit Rabatt ermitteln</p>
   </div>
 
@@ -221,7 +221,7 @@
     <div class="lieferant-banner">
       <div class="icon">🏪</div>
       <div class="text">
-        <strong>Christoffelapotheke</strong>
+        <strong>Christoffel Apotheke</strong>
         <span>Lieferant ist immer vorausgefüllt</span>
       </div>
     </div>
@@ -230,11 +230,11 @@
 
     <div class="field">
       <label for="artikelName">Artikelname</label>
-      <input type="text" id="artikelName" placeholder="z.B. Weleda Calendula Creme" oninput="berechnen()" />
+      <input type="text" id="artikelName" placeholder="" oninput="berechnen()" />
     </div>
 
     <div class="field">
-      <label for="nettoPreis">Einkaufspreis (ohne MwSt.)</label>
+      <label for="nettoPreis">Einkaufspreis</label>
       <div class="input-wrap">
         <span class="pre">CHF</span>
         <input type="number" id="nettoPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
@@ -253,14 +253,6 @@
       <div class="rabatt-badge" id="rabattBadge">
         × 1.250
         <span>Faktor</span>
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="versand">Versandkosten (inkl. MwSt.)</label>
-      <div class="input-wrap">
-        <span class="pre">CHF</span>
-        <input type="number" id="versand" class="has-pre" min="0" step="0.10" value="2.70" oninput="berechnen()" />
       </div>
     </div>
 
@@ -311,7 +303,6 @@
       const ekStr  = $('nettoPreis').value;
       const ek     = parseFloat(ekStr);
       const rabatt = parseFloat($('rabatt').value) || 0;
-      const versand = parseFloat($('versand').value) || 0;
       const anzahl  = Math.max(1, parseInt($('anzahl').value) || 1);
       const el      = $('results');
 
@@ -327,38 +318,33 @@
       }
 
       // VK = EK / (1 - Rabatt/100)  →  for 20%: EK / 80 * 100
-      const vk           = ek * faktor;
-      const marge        = rabatt; // Marge = Rabatt% by definition
-      const gesamt       = vk + versand;
-      const einzelpreis  = gesamt / anzahl;
+      const vk          = ek * faktor;
+      const marge       = rabatt;
+      const einzelpreis = vk / anzahl;
 
       letzteBerechnung = {
-        typ:          'Christoffelapotheke',
-        artikel:      $('artikelName').value.trim() || '(ohne Name)',
-        lieferant:    'Christoffelapotheke',
-        einkaufspreis: ek,
+        typ:            'Christoffel Apotheke',
+        artikel:        $('artikelName').value.trim() || '(ohne Name)',
+        lieferant:      'Christoffel Apotheke',
+        einkaufspreis:  ek,
         rabatt_prozent: rabatt,
         faktor,
-        verkaufspreis: vk,
-        marge_prozent: marge,
-        versand,
+        verkaufspreis:  vk,
+        marge_prozent:  marge,
+        versand:        0,
         anzahl,
-        gesamtpreis:  gesamt,
+        gesamtpreis:    vk,
         einzelpreis
       };
 
       el.innerHTML = `
         <div class="result-row">
-          <span>EK ÷ ${100 - rabatt}% × 100<small class="sub">(Rabatt ${rabatt}%)</small></span>
+          <span>EK ÷ ${100 - rabatt} × 100<small class="sub">(${rabatt}% Rabatt)</small></span>
           <span class="val">${fmt(vk)}</span>
         </div>
-        <div class="result-row">
-          <span>+ Versandkosten (inkl. MwSt.)<small class="sub">(+${fmt(versand)})</small></span>
-          <span class="val">${fmt(gesamt)}</span>
-        </div>
         <div class="result-total">
-          <span class="lbl">Verkaufspreis gesamt</span>
-          <span class="val">${fmt(gesamt)}</span>
+          <span class="lbl">Verkaufspreis</span>
+          <span class="val">${fmt(vk)}</span>
         </div>
         ${anzahl > 1 ? `
         <div class="result-unit">
@@ -418,7 +404,7 @@
           method: 'PUT',
           headers: ghHeaders(gh.token),
           body: JSON.stringify({
-            message: `Preishistorie: ${eintrag.artikel} (Christoffelapotheke)`,
+            message: `Preishistorie: ${eintrag.artikel} (Christoffel Apotheke)`,
             content: btoa(unescape(encodeURIComponent(JSON.stringify(eintraege, null, 2)))),
             branch,
             ...(sha ? { sha } : {})

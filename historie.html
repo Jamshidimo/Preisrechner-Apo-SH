@@ -305,7 +305,7 @@
           <option value="">Alle</option>
           <option value="Importware">Importware</option>
           <option value="SL">SL</option>
-          <option value="Christoffelapotheke">Christoffelapotheke</option>
+          <option value="Christoffel Apotheke">Christoffel Apotheke</option>
         </select>
       </div>
       <div class="filter-field">
@@ -556,12 +556,12 @@
     // Stats
     const anzahlImport       = eintraege.filter(e => (e.typ || 'Importware') === 'Importware').length;
     const anzahlSL           = eintraege.filter(e => e.typ === 'SL').length;
-    const anzahlChristoffel  = eintraege.filter(e => e.typ === 'Christoffelapotheke').length;
+    const anzahlChristoffel  = eintraege.filter(e => e.typ === 'Christoffel Apotheke').length;
     $('statsBar').innerHTML = `
       <span class="stat-pill">${eintraege.length} Einträge</span>
       ${anzahlImport      ? `<span class="stat-pill import">📦 ${anzahlImport} Importware</span>` : ''}
       ${anzahlSL          ? `<span class="stat-pill sl">🏥 ${anzahlSL} SL</span>` : ''}
-      ${anzahlChristoffel ? `<span class="stat-pill" style="background:#f3e5f5;color:#7b1fa2;border-color:#ce93d8;">🏪 ${anzahlChristoffel} Christoffelapotheke</span>` : ''}
+      ${anzahlChristoffel ? `<span class="stat-pill" style="background:#f3e5f5;color:#7b1fa2;border-color:#ce93d8;">🏪 ${anzahlChristoffel} Christoffel Apotheke</span>` : ''}
     `;
 
     // Rows
@@ -569,7 +569,7 @@
       const origIdx = alleEintraege.indexOf(e);
       const typ              = e.typ || 'Importware';
       const isSL             = typ === 'SL';
-      const isChristoffel    = typ === 'Christoffelapotheke';
+      const isChristoffel    = typ === 'Christoffel Apotheke';
       const badgeClass       = isSL ? 'badge-sl' : isChristoffel ? '' : 'badge-import';
       const badgeStyle       = isChristoffel ? 'style="background:#f3e5f5;color:#7b1fa2;border:1px solid #ce93d8;border-radius:12px;padding:2px 8px;font-size:0.72rem;font-weight:700;"' : '';
       const typLabel         = isSL ? '🏥 SL' : isChristoffel ? '🏪 Christoffel' : '📦 Importware';
