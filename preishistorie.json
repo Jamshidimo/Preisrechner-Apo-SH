@@ -42,5 +42,19 @@
     "einzelpreis": 26.25,
     "datum": "4.4.2026",
     "zeit": "12:35"
+  },
+  {
+    "typ": "SL",
+    "artikel": "Colpotrophine 1 Pour Cent Creme 30g Tube",
+    "lieferant": "Heinze",
+    "einkaufspreis": 16.5,
+    "sl_preis": 34.35,
+    "versand": 2.7,
+    "anzahl": 1,
+    "gesamtpreis": 37.050000000000004,
+    "einzelpreis": 37.050000000000004,
+    "marge_prozent": 55.465587044534416,
+    "datum": "8.4.2026",
+    "zeit": "15:43"
   }
 ]
