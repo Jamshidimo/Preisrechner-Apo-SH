@@ -70,5 +70,19 @@
     "marge_prozent": 57.36325385694251,
     "datum": "11.4.2026",
     "zeit": "13:31"
+  },
+  {
+    "typ": "SL",
+    "artikel": "Baqsimi 3mg Nasenspray 1 Einzeldosis",
+    "lieferant": "Heinze",
+    "einkaufspreis": 120,
+    "sl_preis": 146.9,
+    "versand": 2.7,
+    "anzahl": 1,
+    "gesamtpreis": 149.6,
+    "einzelpreis": 149.6,
+    "marge_prozent": 19.786096256684488,
+    "datum": "11.4.2026",
+    "zeit": "13:36"
   }
 ]
