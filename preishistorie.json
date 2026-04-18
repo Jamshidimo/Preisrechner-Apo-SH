@@ -84,5 +84,19 @@
     "marge_prozent": 19.786096256684488,
     "datum": "11.4.2026",
     "zeit": "13:36"
+  },
+  {
+    "typ": "SL",
+    "artikel": "Notrilen 25mg 100 Stk.",
+    "lieferant": "Heinze",
+    "einkaufspreis": 28.6,
+    "sl_preis": 47.5,
+    "versand": 2.7,
+    "anzahl": 1,
+    "gesamtpreis": 50.2,
+    "einzelpreis": 50.2,
+    "marge_prozent": 43.02788844621514,
+    "datum": "18.4.2026",
+    "zeit": "09:31"
   }
 ]
