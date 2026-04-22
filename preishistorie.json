@@ -98,5 +98,20 @@
     "marge_prozent": 43.02788844621514,
     "datum": "18.4.2026",
     "zeit": "09:31"
+  },
+  {
+    "typ": "Importware",
+    "artikel": "Arnica D4/ Cepa D4/ Symphytum D4 Globuli 20g",
+    "lieferant": "Klinik Arlesheim",
+    "einkaufspreis": 14.52,
+    "faktor": 1.6,
+    "marge_prozent": 37.50000000000001,
+    "mwst_prozent": 2.6,
+    "versand": 2,
+    "anzahl": 1,
+    "gesamtpreis": 25.836032,
+    "einzelpreis": 25.836032,
+    "datum": "22.4.2026",
+    "zeit": "16:03"
   }
 ]
