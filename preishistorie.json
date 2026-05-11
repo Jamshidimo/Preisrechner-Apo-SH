@@ -59,20 +59,6 @@
   },
   {
     "typ": "SL",
-    "artikel": "edfsf",
-    "lieferant": "sdfsf",
-    "einkaufspreis": 15.2,
-    "sl_preis": 32.95,
-    "versand": 2.7,
-    "anzahl": 3,
-    "gesamtpreis": 35.650000000000006,
-    "einzelpreis": 11.883333333333335,
-    "marge_prozent": 57.36325385694251,
-    "datum": "11.4.2026",
-    "zeit": "13:31"
-  },
-  {
-    "typ": "SL",
     "artikel": "Baqsimi 3mg Nasenspray 1 Einzeldosis",
     "lieferant": "Heinze",
     "einkaufspreis": 120,
