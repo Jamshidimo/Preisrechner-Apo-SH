@@ -219,7 +219,7 @@
     </div>
 
     <div class="field">
-      <label for="ekPreis">Einkaufspreis (ohne MwSt.)</label>
+      <label for="ekPreis">Einkaufspreis pro Stück (ohne MwSt.)</label>
       <div class="input-wrap">
         <span class="pre">CHF</span>
         <input type="number" id="ekPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
@@ -227,10 +227,21 @@
     </div>
 
     <div class="field">
-      <label for="slPreis">Preis aus BAG SL-Rechner (CHF)</label>
+      <label for="slPreis">SL-Preis pro Stück (aus BAG SL-Rechner)</label>
       <div class="input-wrap">
         <span class="pre">CHF</span>
         <input type="number" id="slPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="field">
+        <label for="charge">Chargen-Nr.</label>
+        <input type="text" id="charge" placeholder="z.B. AB1234" oninput="berechnen()" />
+      </div>
+      <div class="field">
+        <label for="verfall">Verfall (MM/JJJJ)</label>
+        <input type="month" id="verfall" oninput="berechnen()" />
       </div>
     </div>
 
@@ -299,15 +310,18 @@
         return;
       }
 
-      const gesamt      = sl + versand;
-      const einzelpreis = gesamt / anzahl;
-      const ek          = parseFloat($('ekPreis').value) || null;
-      const marge       = (ek != null && gesamt > 0) ? ((gesamt - ek) / gesamt * 100) : null;
+      const versandAnteil = versand / anzahl;             // pro Stk.
+      const einzelpreis   = sl + versandAnteil;            // pro Stk.
+      const gesamt        = einzelpreis * anzahl;          // = sl*anzahl + versand
+      const ek            = parseFloat($('ekPreis').value) || null;
+      const marge         = (ek != null && einzelpreis > 0) ? ((einzelpreis - ek) / einzelpreis * 100) : null;
 
       letzteBerechnung = {
         typ:           'SL',
         artikel:       $('artikelName').value.trim() || '(ohne Name)',
         lieferant:     $('lieferant').value.trim() || '',
+        charge:        $('charge').value.trim() || '',
+        verfall:       $('verfall').value || '',
         einkaufspreis: ek,
         sl_preis:      sl,
         versand,
@@ -319,25 +333,24 @@
 
       el.innerHTML = `
         <div class="result-row">
-          <span>SL-Preis (aus BAG SL-Rechner)</span>
+          <span>SL-Preis pro Stück</span>
           <span class="val">${fmt(sl)}</span>
         </div>
         <div class="result-row">
-          <span>+ Versandkosten (inkl. MwSt.)<small class="sub">(+${fmt(versand)})</small></span>
-          <span class="val">${fmt(gesamt)}</span>
+          <span>+ Versand-Anteil<small class="sub">(${fmt(versand)} ÷ ${anzahl} = ${fmt(versandAnteil)})</small></span>
+          <span class="val">${fmt(einzelpreis)}</span>
+        </div>
+        <div class="result-unit">
+          <span class="lbl">Einzelpreis pro Stück</span>
+          <span class="val">${fmt(einzelpreis)}</span>
         </div>
         <div class="result-total">
-          <span class="lbl">Gesamtpreis</span>
+          <span class="lbl">Gesamtpreis (× ${anzahl} Stk.)</span>
           <span class="val">${fmt(gesamt)}</span>
         </div>
-        ${anzahl > 1 ? `
-        <div class="result-unit">
-          <span class="lbl">Einzelpreis (÷ ${anzahl} Stk.)</span>
-          <span class="val">${fmt(einzelpreis)}</span>
-        </div>` : ''}
         ${marge !== null ? `
         <div class="result-unit" style="border-color:#2e7d3233;margin-top:6px;">
-          <span class="lbl">Handelsmarge</span>
+          <span class="lbl">Handelsmarge (auf Einzelpreis)</span>
           <span class="val" style="color:#2e7d32;">${marge.toFixed(1)}%</span>
         </div>` : ''}
       `;

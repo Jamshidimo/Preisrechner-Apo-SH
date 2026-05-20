@@ -328,10 +328,21 @@
       </div>
 
       <div class="field">
-        <label for="nettoPreis">Einkaufspreis (ohne MwSt.)</label>
+        <label for="nettoPreis">Einkaufspreis pro Stück (ohne MwSt.)</label>
         <div class="input-wrap">
           <span class="pre">CHF</span>
           <input type="number" id="nettoPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="field">
+          <label for="charge">Chargen-Nr.</label>
+          <input type="text" id="charge" placeholder="z.B. AB1234" oninput="berechnen()" />
+        </div>
+        <div class="field">
+          <label for="verfall">Verfall (MM/JJJJ)</label>
+          <input type="month" id="verfall" oninput="berechnen()" />
         </div>
       </div>
 
@@ -447,6 +458,11 @@
 // ──────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const fmt = v => (v != null && !isNaN(v)) ? 'CHF\u00a0' + Number(v).toFixed(2) : '–';
+function formatVerfall(v) {
+  if (!v) return '–';
+  const m = String(v).match(/^(\d{4})-(\d{2})/);
+  return m ? `${m[2]}/${m[1]}` : v;
+}
 
 function aendereAnzahl(delta) {
   const inp = $('anzahl');
@@ -484,17 +500,20 @@ function berechnen() {
     return;
   }
 
-  const nachFaktor   = netto * faktor;
-  const mwstBetrag   = nachFaktor * (mwstPct / 100);
-  const mitMwst      = nachFaktor + mwstBetrag;
-  const gesamt       = mitMwst + versand;
-  const einzelpreis  = gesamt / anzahl;
-  const marge        = ((faktor - 1) / faktor) * 100;
+  const nachFaktor    = netto * faktor;                  // pro Stk., ohne MwSt
+  const mwstBetrag    = nachFaktor * (mwstPct / 100);    // MwSt pro Stk.
+  const mitMwst       = nachFaktor + mwstBetrag;         // pro Stk., mit MwSt
+  const versandAnteil = versand / anzahl;                // Versand-Anteil pro Stk.
+  const einzelpreis   = mitMwst + versandAnteil;         // Pro-Stk.-Verkaufspreis
+  const gesamt        = einzelpreis * anzahl;            // = mitMwst * anzahl + versand
+  const marge         = ((faktor - 1) / faktor) * 100;
 
   letzteBerechnung = {
     typ: 'Importware',
     artikel:   $('artikelName').value.trim() || '(ohne Name)',
     lieferant: $('lieferant').value.trim() || '',
+    charge:    $('charge').value.trim() || '',
+    verfall:   $('verfall').value || '',
     einkaufspreis: netto,
     faktor, marge_prozent: marge,
     mwst_prozent: mwstPct, versand,
@@ -511,18 +530,17 @@ function berechnen() {
       <span class="val">${fmt(mitMwst)}</span>
     </div>
     <div class="result-row">
-      <span>+ Versandkosten<small class="sub"> (+${fmt(versand)})</small></span>
-      <span class="val">${fmt(gesamt)}</span>
+      <span>+ Versand-Anteil<small class="sub"> (${fmt(versand)} ÷ ${anzahl} = ${fmt(versandAnteil)})</small></span>
+      <span class="val">${fmt(einzelpreis)}</span>
+    </div>
+    <div class="result-unit">
+      <span class="lbl">Einzelpreis pro Stück</span>
+      <span class="val">${fmt(einzelpreis)}</span>
     </div>
     <div class="result-total">
-      <span class="lbl">Gesamtpreis</span>
+      <span class="lbl">Gesamtpreis (× ${anzahl} Stk.)</span>
       <span class="val">${fmt(gesamt)}</span>
     </div>
-    ${anzahl > 1 ? `
-    <div class="result-unit">
-      <span class="lbl">Einzelpreis (÷ ${anzahl} Stk.)</span>
-      <span class="val">${fmt(einzelpreis)}</span>
-    </div>` : ''}
   `;
 
   $('saveBtn').disabled = false;
@@ -689,6 +707,8 @@ function renderHistorie(eintraege) {
       <td>${e.datum || ''}${e.zeit ? ' ' + e.zeit : ''}</td>
       <td>${e.artikel || '–'}</td>
       <td>${e.lieferant || '–'}</td>
+      <td>${e.charge || '–'}</td>
+      <td>${formatVerfall(e.verfall)}</td>
       <td class="td-val">${ekZell}</td>
       <td>${e.faktor != null ? Number(e.faktor).toFixed(2) : '–'}</td>
       <td>${e.marge_prozent != null ? Number(e.marge_prozent).toFixed(1) + '%' : '–'}</td>
@@ -707,6 +727,8 @@ function renderHistorie(eintraege) {
           <th>Datum / Zeit</th>
           <th>Artikel</th>
           <th>Lieferant</th>
+          <th>Charge</th>
+          <th>Verfall</th>
           <th>EK (netto)</th>
           <th>Faktor</th>
           <th>Marge</th>
