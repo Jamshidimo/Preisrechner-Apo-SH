@@ -134,5 +134,21 @@
     "einzelpreis": 28.781000000000002,
     "datum": "20.5.2026",
     "zeit": "22:44"
+  },
+  {
+    "typ": "SL",
+    "artikel": "Echinaforce Kaps",
+    "lieferant": "Buchsel",
+    "charge": "ttthh",
+    "verfall": "2030-02",
+    "einkaufspreis": 15.2,
+    "sl_preis": 32.95,
+    "versand": 2.7,
+    "anzahl": 3,
+    "gesamtpreis": 101.55000000000001,
+    "einzelpreis": 33.85,
+    "marge_prozent": 55.096011816838995,
+    "datum": "20.5.2026",
+    "zeit": "22:46"
   }
 ]
