@@ -337,6 +337,8 @@
               <th onclick="sortiere('typ')"          >Typ             <span class="sort-icon" id="s-typ">↕</span></th>
               <th onclick="sortiere('artikel')"      >Artikelname     <span class="sort-icon" id="s-artikel">↕</span></th>
               <th onclick="sortiere('lieferant')"    >Lieferant       <span class="sort-icon" id="s-lieferant">↕</span></th>
+              <th onclick="sortiere('charge')"       >Charge          <span class="sort-icon" id="s-charge">↕</span></th>
+              <th onclick="sortiere('verfall')"      >Verfall         <span class="sort-icon" id="s-verfall">↕</span></th>
               <th onclick="sortiere('einkaufspreis')">EK-Preis        <span class="sort-icon" id="s-einkaufspreis">↕</span></th>
               <th onclick="sortiere('faktor')"       >Faktor / Marge  <span class="sort-icon" id="s-faktor">↕</span></th>
               <th onclick="sortiere('versand')"      >Versand         <span class="sort-icon" id="s-versand">↕</span></th>
@@ -360,7 +362,9 @@
       <div class="field"><label>Zeit</label><input type="text" id="editZeit" placeholder="14:30" /></div>
       <div class="field"><label>Artikelname</label><input type="text" id="editArtikel" /></div>
       <div class="field"><label>Lieferant</label><input type="text" id="editLieferant" /></div>
-      <div class="field" id="editEKRow"><label id="editEKLabel">Einkaufspreis (ohne MwSt.)</label><input type="number" id="editEK" step="0.01" min="0" /></div>
+      <div class="field"><label>Chargen-Nr.</label><input type="text" id="editCharge" placeholder="z.B. AB1234" /></div>
+      <div class="field"><label>Verfall (MM/JJJJ)</label><input type="month" id="editVerfall" /></div>
+      <div class="field" id="editEKRow"><label id="editEKLabel">Einkaufspreis pro Stück (ohne MwSt.)</label><input type="number" id="editEK" step="0.01" min="0" /></div>
       <div class="field" id="editSLRow" style="display:none;"><label>SL-Preis (aus BAG Rechner)</label><input type="number" id="editSL" step="0.01" min="0" /></div>
       <div class="field"><label>Versandkosten (inkl. MwSt.)</label><input type="number" id="editVersand" step="0.01" min="0" /></div>
       <div class="field"><label>Anzahl</label><input type="number" id="editAnzahl" step="1" min="1" /></div>
@@ -389,6 +393,11 @@
 <script>
   const $ = id => document.getElementById(id);
   const fmt = v => (v != null && !isNaN(v)) ? 'CHF\u00a0' + Number(v).toFixed(2) : '–';
+  function formatVerfall(v) {
+    if (!v) return '–';
+    const m = String(v).match(/^(\d{4})-(\d{2})/);
+    return m ? `${m[2]}/${m[1]}` : v;
+  }
 
   let alleEintraege = [];
   let sortKey = 'datum';
@@ -592,6 +601,8 @@
         <td>${isChristoffel ? `<span ${badgeStyle}>${typLabel}</span>` : `<span class="badge-typ ${badgeClass}">${typLabel}</span>`}</td>
         <td><strong>${e.artikel || '–'}</strong></td>
         <td>${e.lieferant || '–'}</td>
+        <td>${e.charge || '–'}</td>
+        <td>${formatVerfall(e.verfall)}</td>
         <td class="td-val">${ekPreis}</td>
         <td>${faktorInfo}</td>
         <td class="td-val">${e.versand != null ? fmt(e.versand) : '–'}</td>
@@ -675,6 +686,8 @@
     $('editZeit').value     = e.zeit     || '';
     $('editArtikel').value  = e.artikel  || '';
     $('editLieferant').value = e.lieferant || '';
+    $('editCharge').value   = e.charge   || '';
+    $('editVerfall').value  = e.verfall  || '';
     $('editVersand').value  = e.versand  != null ? e.versand  : '';
     $('editAnzahl').value   = e.anzahl   != null ? e.anzahl   : 1;
 
@@ -710,20 +723,21 @@
     e.zeit       = $('editZeit').value.trim()     || e.zeit;
     e.artikel    = $('editArtikel').value.trim()  || e.artikel;
     e.lieferant  = $('editLieferant').value.trim();
+    e.charge     = $('editCharge').value.trim();
+    e.verfall    = $('editVerfall').value;
     e.versand    = parseFloat($('editVersand').value) || 0;
     e.anzahl     = parseInt($('editAnzahl').value)    || 1;
     e.einkaufspreis = parseFloat($('editEK').value)   || null;
     if (isSL) e.sl_preis = parseFloat($('editSL').value) || e.sl_preis;
 
-    // Recalculate derived fields
-    const vkGesamt = isSL
-      ? (e.sl_preis || 0) + e.versand
-      : e.gesamtpreis; // keep existing for Importware (complex recalc not in scope)
+    // Recalculate derived fields (SL: sl_preis ist pro Stk., Versand wird anteilig zugeschlagen)
     if (isSL) {
-      e.gesamtpreis  = vkGesamt;
-      e.einzelpreis  = e.anzahl > 0 ? vkGesamt / e.anzahl : vkGesamt;
-      e.marge_prozent = (e.einkaufspreis != null && vkGesamt > 0)
-        ? (vkGesamt - e.einkaufspreis) / vkGesamt * 100 : null;
+      const slUnit       = e.sl_preis || 0;
+      const versandAnteil = e.anzahl > 0 ? e.versand / e.anzahl : e.versand;
+      e.einzelpreis   = slUnit + versandAnteil;
+      e.gesamtpreis   = e.einzelpreis * e.anzahl;
+      e.marge_prozent = (e.einkaufspreis != null && e.einzelpreis > 0)
+        ? (e.einzelpreis - e.einkaufspreis) / e.einzelpreis * 100 : null;
     }
 
     $('modalStatus').textContent  = 'Speichern…';

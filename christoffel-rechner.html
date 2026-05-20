@@ -234,10 +234,21 @@
     </div>
 
     <div class="field">
-      <label for="nettoPreis">Einkaufspreis</label>
+      <label for="nettoPreis">Einkaufspreis pro Stück (ohne MwSt.)</label>
       <div class="input-wrap">
         <span class="pre">CHF</span>
         <input type="number" id="nettoPreis" class="has-pre" min="0" step="0.01" placeholder="0.00" oninput="berechnen()" />
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="field">
+        <label for="charge">Chargen-Nr.</label>
+        <input type="text" id="charge" placeholder="z.B. AB1234" oninput="berechnen()" />
+      </div>
+      <div class="field">
+        <label for="verfall">Verfall (MM/JJJJ)</label>
+        <input type="month" id="verfall" oninput="berechnen()" />
       </div>
     </div>
 
@@ -317,15 +328,18 @@
         return;
       }
 
-      // VK = EK / (1 - Rabatt/100)  →  for 20%: EK / 80 * 100
-      const vk          = ek * faktor;
+      // VK pro Stück = EK / (1 - Rabatt/100)  →  z.B. 20%: EK / 80 * 100
+      const vk          = ek * faktor;        // pro Stk.
       const marge       = rabatt;
-      const einzelpreis = vk / anzahl;
+      const einzelpreis = vk;                 // pro Stk. (kein Versand bei Christoffel)
+      const gesamt      = vk * anzahl;
 
       letzteBerechnung = {
         typ:            'Christoffel Apotheke',
         artikel:        $('artikelName').value.trim() || '(ohne Name)',
         lieferant:      'Christoffel Apotheke',
+        charge:         $('charge').value.trim() || '',
+        verfall:        $('verfall').value || '',
         einkaufspreis:  ek,
         rabatt_prozent: rabatt,
         faktor,
@@ -333,7 +347,7 @@
         marge_prozent:  marge,
         versand:        0,
         anzahl,
-        gesamtpreis:    vk,
+        gesamtpreis:    gesamt,
         einzelpreis
       };
 
@@ -342,15 +356,14 @@
           <span>EK ÷ ${100 - rabatt} × 100<small class="sub">(${rabatt}% Rabatt)</small></span>
           <span class="val">${fmt(vk)}</span>
         </div>
-        <div class="result-total">
-          <span class="lbl">Verkaufspreis</span>
-          <span class="val">${fmt(vk)}</span>
-        </div>
-        ${anzahl > 1 ? `
         <div class="result-unit">
-          <span class="lbl">Einzelpreis (÷ ${anzahl} Stk.)</span>
+          <span class="lbl">Einzelpreis pro Stück</span>
           <span class="val">${fmt(einzelpreis)}</span>
-        </div>` : ''}
+        </div>
+        <div class="result-total">
+          <span class="lbl">Gesamtpreis (× ${anzahl} Stk.)</span>
+          <span class="val">${fmt(gesamt)}</span>
+        </div>
         <div class="result-marge">
           <span class="lbl">Handelsmarge</span>
           <span class="val">${marge.toFixed(1)}%</span>
