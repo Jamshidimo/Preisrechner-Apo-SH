@@ -99,5 +99,23 @@
     "einzelpreis": 25.836032,
     "datum": "22.4.2026",
     "zeit": "16:03"
+  },
+  {
+    "typ": "Christoffel Apotheke",
+    "artikel": "Riboflavin Kaps 400mg 100 Stk",
+    "lieferant": "Christoffel Apotheke",
+    "charge": "ACS45445",
+    "verfall": "2026-02",
+    "einkaufspreis": 45,
+    "rabatt_prozent": 20,
+    "faktor": 1.25,
+    "verkaufspreis": 56.25,
+    "marge_prozent": 20,
+    "versand": 0,
+    "anzahl": 3,
+    "gesamtpreis": 168.75,
+    "einzelpreis": 56.25,
+    "datum": "20.5.2026",
+    "zeit": "22:42"
   }
 ]
