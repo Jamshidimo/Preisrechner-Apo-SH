@@ -117,5 +117,22 @@
     "einzelpreis": 56.25,
     "datum": "20.5.2026",
     "zeit": "22:42"
+  },
+  {
+    "typ": "Importware",
+    "artikel": "Estrodot Pflaster 37.5mcg/24h",
+    "lieferant": "Heinze",
+    "charge": "ABBBS",
+    "verfall": "2028-12",
+    "einkaufspreis": 16.25,
+    "faktor": 1.6,
+    "marge_prozent": 37.50000000000001,
+    "mwst_prozent": 8.1,
+    "versand": 2.7,
+    "anzahl": 4,
+    "gesamtpreis": 115.12400000000001,
+    "einzelpreis": 28.781000000000002,
+    "datum": "20.5.2026",
+    "zeit": "22:44"
   }
 ]
